@@ -46,14 +46,14 @@
             background-attachment: fixed;
         }
         .glass-panel {
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.8);
             box-shadow: 0 8px 32px 0 rgba(132, 204, 22, 0.08);
         }
         .glass-card {
-            background: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(226, 232, 240, 0.8);
         }
@@ -64,7 +64,7 @@
             box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.03);
         }
         .glass-input {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.85);
             border: 1px solid rgba(203, 213, 225, 0.6);
             transition: all 0.2s ease;
         }
@@ -106,7 +106,7 @@
                     </h1>
                     <p class="text-[11px] text-slate-500 flex items-center gap-1">
                         <i data-lucide="sparkles" class="w-3 h-3 text-purple-500"></i>
-                        AI-Powered GitHub Publisher
+                        AI-Powered GitHub Publisher & File Uploader
                     </p>
                 </div>
             </div>
@@ -148,7 +148,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-slate-800">GitHub Connect Required</h3>
-                            <p class="text-sm text-slate-600">Settings থেকে একবার Token দিন — পরবর্তীতে অটো সেভ থাকবে।</p>
+                            <p class="text-sm text-slate-600">Settings থেকে Personal Access Token দিলে অটো সেভ থাকবে।</p>
                         </div>
                     </div>
                     <button onclick="switchTab('settings')" class="w-full md:w-auto px-5 py-2.5 premium-gradient text-white font-semibold rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-sm">
@@ -163,23 +163,24 @@
                     <div>
                         <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                             <i data-lucide="file-up" class="w-5 h-5 text-lime-600"></i>
-                            Upload HTML File / Project / ZIP
+                            Upload & Merge HTML / ZIP / Any Project Files
                         </h2>
-                        <p class="text-xs text-slate-500">Select HTML, single files, folders, or ZIP. AI fixes bugs, then auto-live on GitHub Pages!</p>
+                        <p class="text-xs text-slate-500">ZIP ফাইল বা সরাসরি HTML, CSS, JS ফাইল নির্বাচন করুন। সম্পূর্ণ ফোল্ডার স্ট্রাকচারে গিটহাবে মার্জ হবে।</p>
                     </div>
                     <div class="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-full ai-badge text-white text-[10px] font-bold">
-                        <i data-lucide="brain-circuit" class="w-3 h-3"></i> AI FIX
+                        <i data-lucide="brain-circuit" class="w-3 h-3"></i> AI BUG FIX
                     </div>
                 </div>
 
                 <div id="dropZone" onclick="document.getElementById('fileInput').click()" 
                      class="border-2 border-dashed border-lime-300 hover:border-lime-500 bg-lime-50/30 hover:bg-lime-50/70 rounded-3xl p-8 text-center cursor-pointer transition-all group">
-                    <input type="file" id="fileInput" class="hidden" multiple accept=".html,.htm,.zip,.js,.css,*" onchange="handleFileSelect(event)">
+                    <!-- Multiple files or single HTML files now properly handled -->
+                    <input type="file" id="fileInput" class="hidden" multiple onchange="handleFileSelect(event)">
                     <div class="w-16 h-16 rounded-2xl bg-white shadow-md mx-auto flex items-center justify-center text-lime-500 group-hover:scale-110 transition-transform mb-3 border border-lime-100">
-                        <i data-lucide="file-code-2" class="w-8 h-8"></i>
+                        <i data-lucide="folder-archive" class="w-8 h-8"></i>
                     </div>
-                    <h3 class="font-semibold text-slate-700 text-sm">Click to Browse HTML File / Folder / ZIP or Drag & Drop</h3>
-                    <p class="text-xs text-slate-400 mt-1">HTML, CSS, JS ফাইল বা পুরো ZIP ফাইল নির্বাচন করতে পারবেন</p>
+                    <h3 class="font-semibold text-slate-700 text-sm">Click to Select HTML / ZIP / Any Files</h3>
+                    <p class="text-xs text-slate-400 mt-1">HTML, CSS, JS অথবা ZIP ফাইল নির্বাচন করুন। অটোমেটিক রিমোট রিপোজিটরিতে মার্জ (Merge) হয়ে যাবে।</p>
                 </div>
 
                 <div id="filePreviewSection" class="hidden space-y-3">
@@ -189,7 +190,7 @@
                             <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Clear All
                         </button>
                     </div>
-                    <div id="fileList" class="max-h-48 overflow-y-auto glass-card rounded-2xl p-3 space-y-2 text-xs"></div>
+                    <div id="fileList" class="max-h-60 overflow-y-auto glass-card rounded-2xl p-3 space-y-2 text-xs"></div>
                 </div>
 
                 <div class="space-y-4 pt-4 border-t border-slate-200/60">
@@ -217,7 +218,7 @@
 
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 mb-1">Commit Message</label>
-                        <input type="text" id="commitMessage" value="Pushed via GitPush Premium" class="w-full glass-input px-4 py-2.5 rounded-2xl text-sm">
+                        <input type="text" id="commitMessage" value="Merged & Extracted via GitPush Premium" class="w-full glass-input px-4 py-2.5 rounded-2xl text-sm">
                     </div>
 
                     <!-- AI Toggle -->
@@ -228,8 +229,8 @@
                                     <i data-lucide="sparkles" class="w-4 h-4"></i>
                                 </div>
                                 <div>
-                                    <h4 class="text-sm font-bold text-slate-800">AI Code Auto-Fix</h4>
-                                    <p class="text-[10px] text-slate-500">Gemini fixes bugs before push</p>
+                                    <h4 class="text-sm font-bold text-slate-800">AI Code Auto-Fix (Gemini)</h4>
+                                    <p class="text-[10px] text-slate-500">Scan & auto-correct bugs before committing</p>
                                 </div>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
@@ -238,25 +239,6 @@
                             </label>
                         </div>
                         <p id="aiStatusText" class="text-[10px] text-slate-400 italic">Set Gemini API key in Settings</p>
-                    </div>
-
-                    <!-- GitHub Pages Toggle -->
-                    <div class="glass-card rounded-2xl p-4 border-lime-200/50 space-y-2">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <div class="p-1.5 rounded-lg premium-gradient text-white">
-                                    <i data-lucide="globe" class="w-4 h-4"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-sm font-bold text-slate-800">GitHub Pages Live</h4>
-                                    <p class="text-[10px] text-slate-500">Auto-deploy website → get public URL</p>
-                                </div>
-                            </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="pagesEnableToggle" class="sr-only peer" checked>
-                                <div class="w-11 h-6 bg-slate-300 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-lime-500"></div>
-                            </label>
-                        </div>
                     </div>
 
                     <!-- Progress -->
@@ -271,33 +253,12 @@
                         <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
                             <div id="progressBar" class="premium-gradient h-full w-0 transition-all duration-300 progress-glow rounded-full"></div>
                         </div>
-                        <div id="progressSteps" class="text-[10px] text-slate-500 space-y-0.5 max-h-24 overflow-y-auto"></div>
-                    </div>
-
-                    <!-- Pages URL display -->
-                    <div id="pagesUrlBox" class="hidden glass-card rounded-2xl p-4 border-lime-300 bg-gradient-to-r from-lime-50 to-white">
-                        <div class="flex items-center gap-2 mb-2">
-                            <div class="p-1.5 rounded-lg premium-gradient text-white">
-                                <i data-lucide="globe" class="w-4 h-4"></i>
-                            </div>
-                            <h4 class="text-sm font-bold text-slate-800">Website Live! 🎉</h4>
-                        </div>
-                        <p class="text-xs text-slate-600 mb-2">আপনার ওয়েবসাইট এখন লাইভ:</p>
-                        <div class="flex gap-2">
-                            <input type="text" id="pagesUrlInput" readonly class="flex-1 glass-input px-3 py-2 rounded-xl text-xs font-mono text-lime-700">
-                            <a id="pagesUrlLink" href="#" target="_blank" class="px-3 py-2 premium-gradient text-white rounded-xl text-xs font-bold flex items-center gap-1">
-                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Open
-                            </a>
-                            <button onclick="copyPagesUrl()" class="px-3 py-2 glass-card rounded-xl text-xs font-semibold text-slate-700 hover:bg-lime-50">
-                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                            </button>
-                        </div>
-                        <p id="pagesDeployStatus" class="text-[10px] text-slate-400 mt-2">⏳ Deploy হচ্ছে... ২-৩ মিনিট লাগতে পারে</p>
+                        <div id="progressSteps" class="text-[10px] text-slate-500 space-y-0.5 max-h-24 overflow-y-auto font-mono"></div>
                     </div>
 
                     <button onclick="executePush()" id="pushBtn" class="w-full py-3.5 premium-gradient text-white font-bold rounded-2xl shadow-xl shadow-lime-500/30 transition flex items-center justify-center gap-2 hover:opacity-95 active:scale-[0.99]">
-                        <i data-lucide="send" class="w-5 h-5"></i>
-                        <span>Push & Deploy Live</span>
+                        <i data-lucide="git-merge" class="w-5 h-5"></i>
+                        <span>Upload & Merge Push to GitHub</span>
                     </button>
                 </div>
             </div>
@@ -308,7 +269,7 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h2 class="text-xl font-bold text-slate-900">Repositories</h2>
-                    <p class="text-xs text-slate-500">AI fixes, live builds & deployed sites.</p>
+                    <p class="text-xs text-slate-500">Manage repos, deploy pages & trigger APK builds.</p>
                 </div>
                 <button onclick="openCreateRepoModal()" class="px-4 py-2.5 premium-gradient text-white font-semibold rounded-2xl shadow-lg text-xs flex items-center justify-center gap-2">
                     <i data-lucide="plus" class="w-4 h-4"></i> New Repo
@@ -336,7 +297,7 @@
                         <i data-lucide="settings" class="w-5 h-5 text-lime-600"></i>
                         GitHub Credentials
                     </h2>
-                    <p class="text-xs text-slate-500">PAT with 'repo' + 'workflow' + 'pages' scope.</p>
+                    <p class="text-xs text-slate-500">Requires Personal Access Token (PAT) with 'repo', 'workflow' scopes.</p>
                 </div>
 
                 <div class="space-y-4">
@@ -350,7 +311,7 @@
                         </div>
                         <p class="text-[10px] text-green-600 mt-1 flex items-center gap-1">
                             <i data-lucide="lock" class="w-3 h-3"></i>
-                            একবার সেভ করলে স্থায়ীভাবে থাকবে (localStorage)
+                            একবার সেভ করলে স্থায়ীভাবে Local Storage এ থাকবে
                         </p>
                     </div>
                     <div class="flex gap-3 flex-wrap">
@@ -369,25 +330,17 @@
                         </div>
                         <div>
                             <h3 class="text-sm font-bold text-slate-800">Gemini AI Integration</h3>
-                            <p class="text-[11px] text-slate-500">Auto-fix build errors & enhance code</p>
+                            <p class="text-[11px] text-slate-500">Auto-fix bugs & optimize code before commit</p>
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">Gemini API Key</label>
                         <div class="relative">
-                            <input type="password" id="geminiKeyInput" placeholder="Enter API Key" class="w-full glass-input px-4 py-3 rounded-2xl text-sm pr-12">
+                            <input type="password" id="geminiKeyInput" placeholder="AIzaSy..." class="w-full glass-input px-4 py-3 rounded-2xl text-sm pr-12">
                             <button onclick="toggleGeminiVisibility()" class="absolute right-3 top-3 text-slate-400 hover:text-slate-600">
                                 <i data-lucide="eye" id="geminiEyeIcon" class="w-5 h-5"></i>
                             </button>
-                        </div>
-                        <div class="mt-2 text-[11px] bg-amber-50 border border-amber-200 text-amber-800 p-3 rounded-xl space-y-1">
-                            <p class="font-bold flex items-center gap-1 text-amber-900">
-                                <i data-lucide="info" class="w-3.5 h-3.5 text-amber-600"></i> Gemini API Key কীভাবে পাবেন?
-                            </p>
-                            <p>১. <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-purple-700 underline font-bold">Google AI Studio (aistudio.google.com)</a> তে যান।</p>
-                            <p>২. "Create API Key" বাটনে চাপ দিন।</p>
-                            <p>৩. আপনার API Key-টি কপি করে এখানে পেস্ট করুন।</p>
                         </div>
                     </div>
 
@@ -396,18 +349,10 @@
                             <i data-lucide="save" class="w-3.5 h-3.5"></i> Save AI Key
                         </button>
                         <button onclick="testGeminiConnection()" class="px-4 py-2.5 glass-card text-purple-600 hover:bg-purple-50 font-semibold rounded-2xl text-xs flex items-center justify-center gap-1.5 border border-purple-200">
-                            <i data-lucide="zap" class="w-3.5 h-3.5"></i> Test AI
+                            <i data-lucide="zap" class="w-3.5 h-3.5"></i> Test AI Connection
                         </button>
                     </div>
                     <div id="geminiStatus" class="hidden glass-card p-3 rounded-xl text-xs"></div>
-                </div>
-
-                <div class="pt-4 border-t border-slate-200/60 space-y-3">
-                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">App Status</h4>
-                    <div class="flex justify-between items-center text-xs text-slate-600 glass-card p-3 rounded-2xl">
-                        <span>PWA Installation</span>
-                        <span id="pwaStatusBadge" class="px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 font-medium">Ready</span>
-                    </div>
                 </div>
 
                 <div id="userProfileCard" class="hidden glass-card rounded-2xl p-4 flex items-center gap-4 border-lime-200">
@@ -425,7 +370,7 @@
         <div class="max-w-md mx-auto flex justify-around items-center">
             <button onclick="switchTab('home')" id="nav-home" class="nav-item flex flex-col items-center gap-1 text-lime-600 font-semibold transition">
                 <i data-lucide="upload-cloud" class="w-6 h-6"></i>
-                <span class="text-[11px]">Push</span>
+                <span class="text-[11px]">Push & Upload</span>
             </button>
             <button onclick="switchTab('repos')" id="nav-repos" class="nav-item flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition">
                 <i data-lucide="folder-git-2" class="w-6 h-6"></i>
@@ -460,7 +405,7 @@
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
                 <h3 class="font-bold text-slate-800 flex items-center gap-2">
                     <i data-lucide="box" class="w-5 h-5 text-lime-600"></i>
-                    <span id="buildsRepoTitle">Builds & Artifacts</span>
+                    <span id="buildsRepoTitle">Builds & APK Status</span>
                 </h3>
                 <button onclick="closeBuildsModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
@@ -504,11 +449,11 @@
             <div class="space-y-3">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Name *</label>
-                    <input type="text" id="newRepoName" placeholder="my-project" class="w-full glass-input px-4 py-2.5 rounded-2xl text-sm">
+                    <input type="text" id="newRepoName" placeholder="my-awesome-app" class="w-full glass-input px-4 py-2.5 rounded-2xl text-sm">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Description</label>
-                    <input type="text" id="newRepoDesc" placeholder="Short summary" class="w-full glass-input px-4 py-2.5 rounded-2xl text-sm">
+                    <input type="text" id="newRepoDesc" placeholder="Project description" class="w-full glass-input px-4 py-2.5 rounded-2xl text-sm">
                 </div>
                 <div class="flex items-center gap-2 pt-1">
                     <input type="checkbox" id="newRepoPrivate" class="rounded text-lime-500 w-4 h-4">
@@ -579,7 +524,6 @@
         let activeModalRepo = '';
         let buildPollingInterval = null;
         let activeBuildRunId = null;
-        let pagesPollingInterval = null;
 
         const GEMINI_MODELS = [
             'gemini-2.5-flash',
@@ -591,16 +535,16 @@
         // ============ PWA SETUP ============
         (function setupPWA() {
             const manifestObj = {
-                name: "GitPush Premium - AI GitHub Publisher",
+                name: "GitPush Premium",
                 short_name: "GitPush",
-                description: "Upload ZIP to GitHub, AI auto-fix bugs, live GitHub Pages deploy",
+                description: "Auto Unzip, Merge Push & Deploy to GitHub Pages / Build APK",
                 start_url: "./",
                 display: "standalone",
                 background_color: "#f8fafc",
                 theme_color: "#84cc16",
                 orientation: "portrait-primary",
                 icons: [
-                    { src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='192' height='192' viewBox='0 0 24 24' fill='none' stroke='%2384cc16' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242'/><path d='M12 13v9'/><path d='m16 16-4-4-4 4'/></svg>", sizes: "192x192", type: "image/svg+xml", purpose: "any maskable" }
+                    { src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='192' height='192' viewBox='0 0 24 24' fill='none' stroke='%2384cc16' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242'/><path d='M12 13v9'/><path d='m16 16-4-4-4 4'/></svg>", sizes: "192x192", type: "image/svg+xml" }
                 ]
             };
             const blob = new Blob([JSON.stringify(manifestObj)], { type: 'application/json' });
@@ -679,7 +623,7 @@
 
         async function saveAndVerifyToken() {
             const v = document.getElementById('tokenInput').value.trim();
-            if (!v) return showToast('Warning', 'Enter PAT', 'error');
+            if (!v) return showToast('Warning', 'Enter PAT Token', 'error');
             githubToken = v;
             localStorage.setItem('gh_token', githubToken);
             await verifyTokenAndLoadData();
@@ -702,11 +646,11 @@
                 currentUser = await res.json();
                 localStorage.setItem('gh_user', JSON.stringify(currentUser));
                 updateConnectionUI(true, currentUser);
-                showToast('Connected ✅', `@${currentUser.login} — token saved permanently`);
+                showToast('Connected ✅', `@${currentUser.login} — connected successfully`);
                 await fetchRepositories();
             } catch (err) {
                 updateConnectionUI(false);
-                showToast('Connection Failed', 'Invalid token', 'error');
+                showToast('Connection Failed', 'Invalid token or network error', 'error');
             }
         }
 
@@ -738,7 +682,7 @@
             geminiApiKey = k;
             localStorage.setItem('gemini_key', k);
             updateGeminiStatus();
-            showToast('AI Saved ✨', 'Gemini key saved permanently');
+            showToast('AI Key Saved ✨', 'Gemini key updated');
         }
 
         function updateGeminiStatus() {
@@ -747,7 +691,7 @@
             if (geminiApiKey) {
                 statusEl.classList.remove('hidden');
                 statusEl.innerHTML = '<span class="flex items-center gap-1 text-green-600 font-semibold"><i data-lucide="check-circle" class="w-3 h-3"></i> Gemini API key saved</span>';
-                aiToggleStatus.innerText = '✅ AI active — Gemini will auto-fix bugs';
+                aiToggleStatus.innerText = '✅ AI active — Gemini ready to optimize code';
                 aiToggleStatus.className = 'text-[10px] text-green-600 font-medium';
             } else {
                 statusEl.classList.add('hidden');
@@ -757,27 +701,18 @@
             lucide.createIcons();
         }
 
-        async function callGemini(prompt, systemPrompt = 'You are a senior software engineer. Return only valid responses as requested.') {
-            if (!geminiApiKey) throw new Error('Gemini API key not set. Go to Settings → Save Gemini Key.');
+        async function callGemini(prompt, systemPrompt = 'You are a senior developer. Return only valid responses.') {
+            if (!geminiApiKey) throw new Error('Gemini API key not set in Settings.');
 
             let lastError = null;
-
             for (const model of GEMINI_MODELS) {
                 try {
                     const url = `${GEMINI_BASE}/${model}:generateContent?key=${encodeURIComponent(geminiApiKey)}`;
                     const body = {
-                        contents: [
-                            { role: 'user', parts: [{ text: prompt }] }
-                        ],
-                        generationConfig: {
-                            temperature: 0.2,
-                            maxOutputTokens: 8192,
-                            topP: 0.95
-                        }
+                        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+                        generationConfig: { temperature: 0.2, maxOutputTokens: 8192 }
                     };
-                    if (systemPrompt) {
-                        body.systemInstruction = { parts: [{ text: systemPrompt }] };
-                    }
+                    if (systemPrompt) body.systemInstruction = { parts: [{ text: systemPrompt }] };
 
                     const res = await fetch(url, {
                         method: 'POST',
@@ -792,72 +727,32 @@
                             const errJson = JSON.parse(errText);
                             errMsg = errJson.error?.message || errText;
                         } catch (e) {}
-                        
-                        if (res.status === 400) {
-                            throw new Error(`HTTP 400 Bad Request: ${errMsg.substring(0, 150)}`);
-                        }
-                        if (res.status === 401) {
-                            throw new Error(`HTTP 401 Unauthorized: API key is invalid or unauthenticated.`);
-                        }
-                        if (res.status === 403) {
-                            throw new Error(`HTTP 403 Forbidden: API key is restricted or permission denied (${errMsg.substring(0, 100)})`);
-                        }
-                        if (res.status === 404) {
-                            lastError = new Error(`HTTP 404: Model ${model} not available or endpoint unrecognized.`);
-                            continue;
-                        }
-                        if (res.status === 429) {
-                            throw new Error(`HTTP 429 Too Many Requests: Rate limit or quota exceeded.`);
-                        }
-                        if (res.status >= 500) {
-                            throw new Error(`HTTP ${res.status} Server Error: ${errMsg.substring(0, 120)}`);
-                        }
-                        
-                        throw new Error(`Gemini error (${res.status}): ${errMsg.substring(0, 150)}`);
+                        throw new Error(`Gemini API Error (${res.status}): ${errMsg.substring(0, 150)}`);
                     }
 
                     const data = await res.json();
-                    const candidates = data.candidates || [];
-                    if (candidates.length === 0) {
-                        throw new Error('AI returned no response candidates.');
-                    }
-                    
-                    const parts = candidates[0].content?.parts || [];
-                    const text = parts.map(p => p.text || '').join('').trim();
-                    
-                    if (!text) {
-                        if (candidates[0].finishReason === 'SAFETY') {
-                            throw new Error('AI response was blocked by safety filter.');
-                        }
-                        throw new Error('AI returned an empty response.');
-                    }
-                    
+                    const candidate = data.candidates?.[0];
+                    const text = candidate?.content?.parts?.map(p => p.text || '').join('').trim();
+                    if (!text) throw new Error('Gemini returned an empty response.');
                     return text;
                 } catch (err) {
                     lastError = err;
-                    if (err.message.includes('HTTP 401') || err.message.includes('HTTP 403') || err.message.includes('HTTP 429') || err.message.includes('HTTP 400')) {
-                        throw err;
-                    }
-                    console.warn(`Gemini ${model} attempt failed:`, err.message);
-                    continue;
+                    console.warn(`Gemini model ${model} failed:`, err.message);
                 }
             }
-            throw lastError || new Error('Gemini API call failed. Check your network or key permissions.');
+            throw lastError || new Error('Gemini API request failed.');
         }
 
         async function testGeminiConnection() {
             if (!geminiApiKey) return showToast('AI Required', 'Save Gemini key first', 'error');
             try {
-                showToast('Testing AI', 'Connecting to Gemini...');
-                const reply = await callGemini('Reply with exactly: "AI_CONNECTED_OK"');
-                showToast('AI Connected ✅', reply.trim().substring(0, 80));
-                document.getElementById('geminiStatus').innerHTML = '<span class="flex items-center gap-1 text-green-600 font-semibold"><i data-lucide="check-circle" class="w-3 h-3"></i> Working! Test response: ' + reply.substring(0,50) + '</span>';
+                showToast('Testing AI', 'Connecting to Gemini API...');
+                const reply = await callGemini('Respond with "OK"');
+                showToast('AI Connected ✅', 'Gemini is responding normally');
+                document.getElementById('geminiStatus').innerHTML = '<span class="flex items-center gap-1 text-green-600 font-semibold"><i data-lucide="check-circle" class="w-3 h-3"></i> AI Verified successfully!</span>';
                 lucide.createIcons();
             } catch (err) {
                 showToast('AI Error ❌', err.message, 'error');
-                document.getElementById('geminiStatus').classList.remove('hidden');
-                document.getElementById('geminiStatus').innerHTML = '<span class="flex items-start gap-1 text-red-600"><i data-lucide="x-circle" class="w-3 h-3 mt-0.5"></i><span><b>Error:</b> ' + err.message + '</span></span>';
-                lucide.createIcons();
             }
         }
 
@@ -872,7 +767,7 @@
         function renderRepoDropdownOptions() {
             const container = document.getElementById('repoDropdownOptions');
             const current = document.getElementById('repoSelect').value;
-            if (repositories.length === 0) { container.innerHTML = '<div class="px-3 py-2 text-slate-400 italic">Connect token</div>'; return; }
+            if (repositories.length === 0) { container.innerHTML = '<div class="px-3 py-2 text-slate-400 italic">Connect token to see repos</div>'; return; }
             let html = `<label onclick="selectRepoOption('')" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-slate-800/80 transition text-slate-200"><span class="font-medium truncate">-- Choose Repository --</span><input type="radio" name="repoRadio" ${current===''?'checked':''} class="w-4 h-4 accent-lime-400"></label>`;
             repositories.forEach(r => {
                 html += `<label onclick="selectRepoOption('${r.full_name}')" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-slate-800/80 transition text-slate-200"><span class="font-medium truncate">${r.full_name} ${r.private?'🔒':''}</span><input type="radio" name="repoRadio" ${current===r.full_name?'checked':''} class="w-4 h-4 accent-lime-400"></label>`;
@@ -889,10 +784,10 @@
                 repositories = await res.json();
                 renderRepoDropdownOptions();
                 renderRepoList(repositories);
-            } catch (err) { showToast('Error', 'Failed to load repos'); }
+            } catch (err) { showToast('Error', 'Failed to fetch repository list'); }
         }
 
-        // ============ FILE HANDLING ============
+        // ============ FILE HANDLING & UNZIP ============
         function setupDragAndDrop() {
             const dz = document.getElementById('dropZone'); if (!dz) return;
             ['dragenter','dragover','dragleave','drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); }));
@@ -901,29 +796,79 @@
             dz.addEventListener('drop', e => handleFileSelect({ target: { files: e.dataTransfer.files } }));
         }
 
+        function sanitizeZipPaths(extractedFiles) {
+            const paths = Object.keys(extractedFiles);
+            if (paths.length === 0) return extractedFiles;
+            
+            const firstParts = paths.map(p => p.split('/')[0]);
+            const allSameRoot = firstParts.every(part => part === firstParts[0]);
+            
+            const hasSubFiles = paths.some(p => p.includes('/'));
+            if (allSameRoot && hasSubFiles) {
+                const rootPrefix = firstParts[0] + '/';
+                const cleaned = {};
+                for (const [p, entry] of Object.entries(extractedFiles)) {
+                    if (p !== firstParts[0] && p !== rootPrefix) {
+                        const newPath = p.startsWith(rootPrefix) ? p.slice(rootPrefix.length) : p;
+                        if (newPath) cleaned[newPath] = entry;
+                    }
+                }
+                return cleaned;
+            }
+            return extractedFiles;
+        }
+
+        // FIXED FILE SELECTION HANDLER (Support Single/Multiple HTML & Files)
         async function handleFileSelect(event) {
             const files = event.target.files; if (!files?.length) return;
-            preparedFiles = [];
+            
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
-                if (file.name.endsWith('.zip')) {
-                    showToast('Extracting', `${file.name}...`);
+                if (file.name.toLowerCase().endsWith('.zip')) {
+                    showToast('Unzipping Archive', `Extracting ${file.name}...`);
                     try {
                         const zip = new JSZip();
-                        const content = await zip.loadAsync(file);
-                        for (const [path, entry] of Object.entries(content.files)) {
+                        const zipContent = await zip.loadAsync(file);
+                        const sanitizedFiles = sanitizeZipPaths(zipContent.files);
+
+                        for (const [path, entry] of Object.entries(sanitizedFiles)) {
                             if (!entry.dir) {
                                 const data = await entry.async('uint8array');
-                                preparedFiles.push({ path, content: data });
+                                preparedFiles.push({ path: path, content: data });
                             }
                         }
-                    } catch (e) { showToast('ZIP Error', 'Extract failed', 'error'); }
+                        showToast('ZIP Extracted ✅', `${preparedFiles.length} files extracted into folder tree`);
+                    } catch (e) {
+                        showToast('ZIP Error', 'Failed to extract ZIP content', 'error');
+                    }
                 } else {
+                    // Properly read single or multiple non-ZIP files (like html, css, js)
                     const ab = await file.arrayBuffer();
-                    preparedFiles.push({ path: file.webkitRelativePath || file.name, content: new Uint8Array(ab) });
+                    const path = file.webkitRelativePath || file.name;
+                    preparedFiles.push({ path: path, content: new Uint8Array(ab) });
                 }
             }
             renderFileList();
+        }
+
+        function updateFileName(index, newPath) {
+            const trimmed = newPath.trim();
+            if (!trimmed) {
+                showToast('Path Error', 'File path cannot be empty', 'error');
+                renderFileList();
+                return;
+            }
+            if (preparedFiles[index]) {
+                preparedFiles[index].path = trimmed;
+                renderFileList();
+            }
+        }
+
+        function removeSingleFile(index) {
+            if (preparedFiles[index]) {
+                preparedFiles.splice(index, 1);
+                renderFileList();
+            }
         }
 
         function renderFileList() {
@@ -931,20 +876,36 @@
             const list = document.getElementById('fileList');
             const cnt = document.getElementById('fileCountText');
             list.innerHTML = '';
+            
             if (preparedFiles.length > 0) {
                 sec.classList.remove('hidden');
-                const hasIndex = preparedFiles.some(f => f.path === 'index.html' || f.path.endsWith('/index.html'));
-                cnt.innerText = `${preparedFiles.length} file(s) ready ${hasIndex ? '✅ (index.html found)' : '⚠️ (no index.html)'}`;
-                preparedFiles.slice(0,50).forEach(f => {
+                cnt.innerText = `${preparedFiles.length} file(s) ready for merge push`;
+                
+                preparedFiles.slice(0, 50).forEach((f, idx) => {
                     const el = document.createElement('div');
-                    el.className = 'flex justify-between items-center bg-white/70 px-3 py-1.5 rounded-xl border border-slate-100';
-                    el.innerHTML = `<span class="truncate max-w-xs font-mono text-slate-700">${f.path}</span><span class="text-[10px] text-slate-400 font-semibold">${(f.content.length/1024).toFixed(1)} KB</span>`;
+                    el.className = 'flex items-center justify-between bg-white/80 p-2 rounded-xl border border-slate-200/70 gap-2';
+                    el.innerHTML = `
+                        <div class="flex items-center gap-2 flex-1 min-w-0">
+                            <i data-lucide="file" class="w-4 h-4 text-lime-600 flex-shrink-0"></i>
+                            <input type="text" value="${f.path.replace(/"/g, '&quot;')}" 
+                                   onchange="updateFileName(${idx}, this.value)" 
+                                   title="Editable file path"
+                                   class="w-full font-mono text-xs text-slate-800 bg-white px-2.5 py-1 rounded-lg border border-slate-300 focus:border-lime-500 outline-none">
+                        </div>
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <span class="text-[10px] text-slate-400 font-semibold">${(f.content.length/1024).toFixed(1)} KB</span>
+                            <button onclick="removeSingleFile(${idx})" class="text-red-400 hover:text-red-600 p-1 rounded-lg hover:bg-red-50">
+                                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                    `;
                     list.appendChild(el);
                 });
                 if (preparedFiles.length > 50) {
                     const el = document.createElement('div'); el.className = 'text-center text-slate-400 text-[11px] pt-1';
-                    el.innerText = `...and ${preparedFiles.length-50} more`; list.appendChild(el);
+                    el.innerText = `...and ${preparedFiles.length - 50} more files`; list.appendChild(el);
                 }
+                lucide.createIcons();
             } else sec.classList.add('hidden');
         }
 
@@ -970,11 +931,11 @@
 
         function hidePushProgress() { document.getElementById('pushProgressContainer').classList.add('hidden'); document.getElementById('progressSteps').innerHTML = ''; }
 
-        // ============ AI PRE-FIX ============
+        // ============ AI AUTO-FIX ============
         async function aiPreFixFiles(files) {
             if (!geminiApiKey || !document.getElementById('aiAutoFixToggle').checked) return files;
-            showToast('AI Analyzing', 'Gemini scanning files for bugs...');
-            const codeFiles = files.filter(f => /\.(js|ts|jsx|tsx|py|java|kt|html|css|json|yml|yaml|md|txt|gradle|xml|php|rb|go|rs)$/i.test(f.path));
+            showToast('AI Active', 'Gemini scanning files for quick fixes...');
+            const codeFiles = files.filter(f => /\.(js|ts|jsx|tsx|html|css|json)$/i.test(f.path));
             const fixedFiles = [...files];
             
             let fixedCount = 0;
@@ -984,12 +945,12 @@
                     const content = new TextDecoder().decode(f.content);
                     if (content.length > 4000 || content.length < 20) continue;
                     
-                    const prompt = `Fix bugs/syntax errors in this file. Return ONLY corrected code, NO markdown fences, NO explanation.\n\nFile: ${f.path}\n\n\`\`\`\n${content}\n\`\`\``;
-                    const fixed = await callGemini(prompt, 'You are a bug-fixing bot. Return only the corrected file content as-is.');
+                    const prompt = `Fix bugs or errors in file: ${f.path}. Return ONLY corrected code:\n\n\`\`\`\n${content}\n\`\`\``;
+                    const fixed = await callGemini(prompt, 'Return clean corrected code with no markdown wrapper.');
                     
                     if (fixed && fixed.length > 10) {
                         let cleanFixed = fixed.replace(/^```[\w]*\n?/gm, '').replace(/```$/gm, '').trim();
-                        if (cleanFixed.length > 10 && cleanFixed !== content.trim()) {
+                        if (cleanFixed && cleanFixed !== content.trim()) {
                             const idx = fixedFiles.findIndex(ff => ff.path === f.path);
                             if (idx !== -1) {
                                 fixedFiles[idx] = { path: f.path, content: new TextEncoder().encode(cleanFixed) };
@@ -997,171 +958,115 @@
                             }
                         }
                     }
-                } catch (e) { 
-                    console.warn('AI fix skip', f.path, e.message);
-                    if (e.message.includes('HTTP 429') || e.message.includes('HTTP 401') || e.message.includes('HTTP 403')) break;
+                } catch (e) {
+                    console.warn('AI pre-fix skipped:', f.path, e.message);
                 }
             }
-            if (fixedCount > 0) showToast('AI Fixed', `${fixedCount} file(s) auto-corrected`);
+            if (fixedCount > 0) showToast('AI Fixes Applied', `${fixedCount} file(s) optimized before commit`);
             return fixedFiles;
         }
 
-        // ============ GITHUB PAGES DEPLOY ============
-        async function deployGitHubPages(repoFullName, branch) {
-            const [owner, repo] = repoFullName.split('/');
-            try {
-                const enableRes = await fetch(`https://api.github.com/repos/${repoFullName}/pages`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github+json' },
-                    body: JSON.stringify({ source: { branch: branch, path: '/' } })
-                });
-                
-                if (!enableRes.ok && enableRes.status === 409) {
-                    await fetch(`https://api.github.com/repos/${repoFullName}/pages`, {
-                        method: 'PUT',
-                        headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github+json' },
-                        body: JSON.stringify({ source: { branch: branch, path: '/' } })
-                    });
-                }
-                
-                let pagesUrl = repo.toLowerCase() === `${owner.toLowerCase()}.github.io` ? `https://${owner}.github.io/` : `https://${owner}.github.io/${repo}/`;
-                return { url: pagesUrl, enabled: true };
-            } catch (err) {
-                let pagesUrl = repo.toLowerCase() === `${owner.toLowerCase()}.github.io` ? `https://${owner}.github.io/` : `https://${owner}.github.io/${repo}/`;
-                return { url: pagesUrl, enabled: false, error: err.message };
-            }
-        }
-
-        function showPagesUrl(url) {
-            const box = document.getElementById('pagesUrlBox');
-            box.classList.remove('hidden');
-            document.getElementById('pagesUrlInput').value = url;
-            document.getElementById('pagesUrlLink').href = url;
-            document.getElementById('pagesDeployStatus').innerText = '⏳ GitHub Pages deploy হচ্ছে — ২-৩ মিনিট পর লাইভ হবে';
-            
-            stopPagesPolling();
-            let attempts = 0;
-            pagesPollingInterval = setInterval(() => {
-                attempts++;
-                if (attempts >= 6) {
-                    document.getElementById('pagesDeployStatus').innerHTML = '✅ Live check করুন — <a href="' + url + '" target="_blank" class="text-lime-600 underline font-semibold">এখানে ক্লিক করুন</a>';
-                    clearInterval(pagesPollingInterval);
-                } else {
-                    document.getElementById('pagesDeployStatus').innerText = `⏳ Deploy চলছে... (${attempts * 30}s elapsed)`;
-                }
-            }, 30000);
-        }
-
-        function stopPagesPolling() { if (pagesPollingInterval) { clearInterval(pagesPollingInterval); pagesPollingInterval = null; } }
-
-        function copyPagesUrl() {
-            const url = document.getElementById('pagesUrlInput').value;
-            navigator.clipboard.writeText(url).then(() => showToast('Copied', url));
-        }
-
-        // ============ PUSH ENGINE ============
+        // ============ MERGE PUSH ENGINE ============
         async function executePush() {
-            if (!githubToken) return showToast('Auth Required', 'Set token in Settings', 'error');
+            if (!githubToken) return showToast('Auth Required', 'Set GitHub PAT in Settings', 'error');
             const repoFullName = document.getElementById('repoSelect').value;
             const branch = document.getElementById('branchInput').value.trim() || 'main';
-            const commitMsg = document.getElementById('commitMessage').value.trim() || 'Push via GitPush';
-            const wantPages = document.getElementById('pagesEnableToggle').checked;
+            const commitMsg = document.getElementById('commitMessage').value.trim() || 'Merge Push via GitPush';
             
-            if (!repoFullName) return showToast('Missing Repo', 'Select repo', 'error');
-            if (preparedFiles.length === 0) return showToast('No Files', 'Upload files', 'error');
+            if (!repoFullName) return showToast('Missing Repo', 'Please select target repository', 'error');
+            if (preparedFiles.length === 0) return showToast('No Files', 'Upload HTML files or ZIP to push', 'error');
 
             const pushBtn = document.getElementById('pushBtn');
             pushBtn.disabled = true;
-            pushBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Processing...';
+            pushBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Merging & Pushing...';
             lucide.createIcons();
             document.getElementById('progressSteps').innerHTML = '';
-            document.getElementById('pagesUrlBox').classList.add('hidden');
 
             try {
                 let filesToPush = preparedFiles;
                 if (geminiApiKey && document.getElementById('aiAutoFixToggle').checked) {
-                    updatePushProgress(5, 'AI analyzing for bugs...', 'Gemini scanning code files');
-                    try {
-                        filesToPush = await aiPreFixFiles(preparedFiles);
-                        updatePushProgress(15, 'AI fixes applied', `Processed ${filesToPush.length} files`);
-                    } catch (aiErr) {
-                        showToast('AI Skipped', aiErr.message + ' — pushing without AI fix');
-                        filesToPush = preparedFiles;
-                    }
+                    updatePushProgress(5, 'AI Analyzing Code...', 'Scanning files');
+                    filesToPush = await aiPreFixFiles(preparedFiles);
                 }
 
-                updatePushProgress(20, `Fetching branch (${branch})...`, 'Reading latest commit');
-                const refRes = await fetch(`https://api.github.com/repos/${repoFullName}/git/ref/heads/${branch}`, { headers: { 'Authorization': `token ${githubToken}` } });
+                updatePushProgress(15, `Checking target branch '${branch}'...`, 'Fetching commit reference');
+                const refRes = await fetch(`https://api.github.com/repos/${repoFullName}/git/ref/heads/${branch}`, { 
+                    headers: { 'Authorization': `token ${githubToken}` } 
+                });
+                
                 let latestCommitSha = '', baseTreeSha = '';
                 if (refRes.ok) {
                     const refData = await refRes.json();
                     latestCommitSha = refData.object.sha;
-                    const cRes = await fetch(`https://api.github.com/repos/${repoFullName}/git/commits/${latestCommitSha}`, { headers: { 'Authorization': `token ${githubToken}` } });
-                    const cData = await cRes.json();
-                    baseTreeSha = cData.tree.sha;
+                    const cRes = await fetch(`https://api.github.com/repos/${repoFullName}/git/commits/${latestCommitSha}`, { 
+                        headers: { 'Authorization': `token ${githubToken}` } 
+                    });
+                    if (cRes.ok) {
+                        const cData = await cRes.json();
+                        baseTreeSha = cData.tree.sha;
+                    }
                 }
 
                 const treeItems = [];
                 const total = filesToPush.length;
                 for (let idx = 0; idx < total; idx++) {
                     const file = filesToPush[idx];
-                    const pct = 25 + Math.round(((idx+1)/total) * 50);
-                    updatePushProgress(pct, `Uploading ${idx+1}/${total}`, file.path.split('/').pop());
+                    const pct = 20 + Math.round(((idx + 1) / total) * 60);
+                    updatePushProgress(pct, `Uploading (${idx + 1}/${total})`, file.path);
+                    
                     let binary = '';
                     const bytes = file.content, len = bytes.byteLength;
                     for (let i = 0; i < len; i++) binary += String.fromCharCode(bytes[i]);
                     const b64 = btoa(binary);
+
                     const blobRes = await fetch(`https://api.github.com/repos/${repoFullName}/git/blobs`, {
-                        method: 'POST', headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
+                        method: 'POST', 
+                        headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
                         body: JSON.stringify({ content: b64, encoding: 'base64' })
                     });
-                    if (!blobRes.ok) throw new Error(`Blob failed: ${file.path}`);
+                    if (!blobRes.ok) throw new Error(`Failed to upload blob: ${file.path}`);
                     const blobData = await blobRes.json();
                     treeItems.push({ path: file.path, mode: '100644', type: 'blob', sha: blobData.sha });
                 }
 
-                updatePushProgress(80, 'Building Git tree...', `${treeItems.length} files staged`);
+                updatePushProgress(85, 'Merging Git Tree...', `${treeItems.length} files merged onto base tree`);
                 const treePayload = { tree: treeItems };
                 if (baseTreeSha) treePayload.base_tree = baseTreeSha;
+
                 const treeRes = await fetch(`https://api.github.com/repos/${repoFullName}/git/trees`, {
-                    method: 'POST', headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
+                    method: 'POST', 
+                    headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify(treePayload)
                 });
-                if (!treeRes.ok) throw new Error('Tree creation failed');
+                if (!treeRes.ok) throw new Error('Tree merge failed');
                 const treeData = await treeRes.json();
 
-                updatePushProgress(88, 'Creating commit...', 'Finalizing changes');
+                updatePushProgress(90, 'Creating Commit...', 'Signing commit reference');
                 const commitPayload = { message: commitMsg, tree: treeData.sha, parents: latestCommitSha ? [latestCommitSha] : [] };
                 const newCommitRes = await fetch(`https://api.github.com/repos/${repoFullName}/git/commits`, {
-                    method: 'POST', headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
+                    method: 'POST', 
+                    headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify(commitPayload)
                 });
                 if (!newCommitRes.ok) throw new Error('Commit creation failed');
                 const newCommitData = await newCommitRes.json();
 
-                updatePushProgress(93, 'Updating branch...', `→ ${branch}`);
+                updatePushProgress(95, 'Updating Branch Head...', `Updating ${branch}`);
                 let upRes = latestCommitSha 
                     ? await fetch(`https://api.github.com/repos/${repoFullName}/git/refs/heads/${branch}`, {
-                        method: 'PATCH', headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
+                        method: 'PATCH', 
+                        headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
                         body: JSON.stringify({ sha: newCommitData.sha })
                     })
                     : await fetch(`https://api.github.com/repos/${repoFullName}/git/refs`, {
-                        method: 'POST', headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
+                        method: 'POST', 
+                        headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
                         body: JSON.stringify({ ref: `refs/heads/${branch}`, sha: newCommitData.sha })
                     });
-                if (!upRes.ok) throw new Error('Branch update failed');
+                if (!upRes.ok) throw new Error('Failed to update branch reference');
 
-                if (wantPages) {
-                    updatePushProgress(96, 'Enabling GitHub Pages...', 'Deploying website live');
-                    const pagesResult = await deployGitHubPages(repoFullName, branch);
-                    updatePushProgress(100, 'Complete! 🎉', `Pushed ${filesToPush.length} files`);
-                    showPagesUrl(pagesResult.url);
-                    showToast('Push & Deploy Started 🚀', `Website URL: ${pagesResult.url}`);
-                } else {
-                    updatePushProgress(100, 'Push complete! ✅', `${filesToPush.length} files pushed`);
-                    showToast('Push Successful! 🎉', `Pushed ${filesToPush.length} files`);
-                }
-                
+                updatePushProgress(100, 'Success! 🎉', `Pushed & Merged ${filesToPush.length} files successfully!`);
+                showToast('Push Successful! 🎉', `Uploaded & merged ${filesToPush.length} file(s)`);
                 clearSelectedFiles();
             } catch (err) {
                 console.error(err);
@@ -1169,13 +1074,84 @@
                 updatePushProgress(100, 'Failed ❌', err.message);
             } finally {
                 pushBtn.disabled = false;
-                pushBtn.innerHTML = '<i data-lucide="send" class="w-5 h-5"></i><span>Push & Deploy Live</span>';
+                pushBtn.innerHTML = '<i data-lucide="git-merge" class="w-5 h-5"></i><span>Upload & Merge Push to GitHub</span>';
                 lucide.createIcons();
-                setTimeout(hidePushProgress, 4000);
+                setTimeout(hidePushProgress, 5000);
             }
         }
 
-        // ============ REPO MANAGEMENT MODALS & OPERATIONS ============
+        // ============ REPO MANUAL ACTIONS ============
+        async function triggerDeployPages(repoFullName) {
+            if (!githubToken) return showToast('Auth Required', 'Token missing', 'error');
+            const [owner, repo] = repoFullName.split('/');
+            try {
+                showToast('Enabling Pages', `Configuring GitHub Pages for ${repo}...`);
+                const res = await fetch(`https://api.github.com/repos/${repoFullName}/pages`, {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `token ${githubToken}`, 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github+json'
+                    },
+                    body: JSON.stringify({ source: { branch: 'main', path: '/' } })
+                });
+
+                if (!res.ok && res.status === 409) {
+                    await fetch(`https://api.github.com/repos/${repoFullName}/pages`, {
+                        method: 'PUT',
+                        headers: { 
+                            'Authorization': `token ${githubToken}`, 
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/vnd.github+json'
+                        },
+                        body: JSON.stringify({ source: { branch: 'main', path: '/' } })
+                    });
+                }
+                
+                const pagesUrl = repo.toLowerCase() === `${owner.toLowerCase()}.github.io` 
+                    ? `https://${owner}.github.io/` 
+                    : `https://${owner}.github.io/${repo}/`;
+
+                showToast('GitHub Pages Enabled 🌐', `URL: ${pagesUrl}`);
+                window.open(pagesUrl, '_blank');
+            } catch (err) {
+                showToast('Pages Error', err.message, 'error');
+            }
+        }
+
+        async function triggerRepoBuild(repoFullName) {
+            if (!githubToken) return showToast('Auth Required', 'Token missing', 'error');
+            try {
+                showToast('Triggering Build', 'Looking for GitHub Actions Workflows...');
+                const wfRes = await fetch(`https://api.github.com/repos/${repoFullName}/actions/workflows`, {
+                    headers: { 'Authorization': `token ${githubToken}` }
+                });
+                if (!wfRes.ok) throw new Error('Could not fetch workflows');
+                const wfData = await wfRes.json();
+
+                if (!wfData.workflows || wfData.workflows.length === 0) {
+                    return showToast('No Workflow Found', 'Create .github/workflows/build.yml to enable APK/App builds.', 'error');
+                }
+
+                const workflow = wfData.workflows[0];
+                const dispatchRes = await fetch(`https://api.github.com/repos/${repoFullName}/actions/workflows/${workflow.id}/dispatches`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ref: 'main' })
+                });
+
+                if (dispatchRes.ok) {
+                    showToast('Build Triggered 🚀', `Workflow "${workflow.name}" started!`);
+                    openBuildsModal(repoFullName);
+                } else {
+                    throw new Error('Failed to dispatch workflow build.');
+                }
+            } catch (err) {
+                showToast('Build Trigger Error', err.message, 'error');
+            }
+        }
+
+        // ============ REPO MODALS ============
         function openCreateRepoModal() { document.getElementById('createRepoModal').classList.remove('hidden'); }
         function closeCreateRepoModal() { document.getElementById('createRepoModal').classList.add('hidden'); }
 
@@ -1236,7 +1212,7 @@
                     headers: { 'Authorization': `token ${githubToken}` }
                 });
                 if (!res.ok) throw new Error('Failed to delete repository');
-                showToast('Deleted', `${repoName} removed`);
+                showToast('Deleted', `${repoName} deleted permanently`);
                 fetchRepositories();
             } catch (err) { showToast('Delete Failed', err.message, 'error'); }
         }
@@ -1245,10 +1221,10 @@
             activeModalRepo = repoFullName;
             document.getElementById('aiFixContent').innerHTML = `
                 <div class="glass-card p-4 rounded-2xl text-center space-y-3">
-                    <p class="text-xs text-slate-600">Enter a problem description or select auto-scan to run Gemini Code Fix on ${repoFullName.split('/')[1]}</p>
-                    <textarea id="aiFixPromptInput" placeholder="e.g. Fix CSS responsive menu bug or optimize script loading..." class="w-full glass-input p-3 rounded-xl text-xs h-24"></textarea>
+                    <p class="text-xs text-slate-600">Enter a bug description or prompt for ${repoFullName.split('/')[1]}</p>
+                    <textarea id="aiFixPromptInput" placeholder="e.g. Fix responsive CSS layout issue or optimization..." class="w-full glass-input p-3 rounded-xl text-xs h-24 outline-none"></textarea>
                     <button onclick="runManualAiFix()" class="w-full py-2.5 ai-badge text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5">
-                        <i data-lucide="sparkles" class="w-4 h-4"></i> Run AI Fix & Commit
+                        <i data-lucide="sparkles" class="w-4 h-4"></i> Run Gemini Code Fix
                     </button>
                 </div>`;
             document.getElementById('aiFixModal').classList.remove('hidden');
@@ -1261,14 +1237,14 @@
             if (!geminiApiKey) return showToast('AI Required', 'Set Gemini API Key in Settings', 'error');
 
             const contentEl = document.getElementById('aiFixContent');
-            contentEl.innerHTML = '<div class="text-center py-8 text-slate-400"><i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-purple-500"></i><p class="text-xs">Gemini is writing the fix...</p></div>';
+            contentEl.innerHTML = '<div class="text-center py-8 text-slate-400"><i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-purple-500"></i><p class="text-xs">Gemini AI analyzing request...</p></div>';
             lucide.createIcons();
 
             try {
-                const solution = await callGemini(`Request: ${prompt}\nProvide concise code recommendations or updates.`);
+                const solution = await callGemini(`Request: ${prompt}\nProvide detailed instructions or corrected code snippet.`);
                 contentEl.innerHTML = `
                     <div class="glass-card p-4 rounded-2xl space-y-2">
-                        <h4 class="font-bold text-xs text-purple-700">AI Response:</h4>
+                        <h4 class="font-bold text-xs text-purple-700">Gemini Suggestion:</h4>
                         <pre class="text-[11px] text-slate-700 bg-slate-50 p-3 rounded-xl overflow-x-auto border border-slate-200">${solution.replace(/</g,'&lt;')}</pre>
                     </div>`;
             } catch (err) {
@@ -1281,9 +1257,9 @@
         // ============ REPO LIST RENDER ============
         function renderRepoList(repos) {
             const container = document.getElementById('repoListContainer'); container.innerHTML = '';
-            if (repos.length === 0) { container.innerHTML = '<div class="col-span-full glass-panel rounded-3xl p-8 text-center text-slate-400"><p>No repos found.</p></div>'; return; }
+            if (repos.length === 0) { container.innerHTML = '<div class="col-span-full glass-panel rounded-3xl p-8 text-center text-slate-400"><p>No repositories found.</p></div>'; return; }
+            
             repos.forEach(repo => {
-                const pagesUrl = `https://${repo.owner.login}.github.io/${repo.name}/`;
                 const card = document.createElement('div');
                 card.className = 'glass-panel rounded-2xl p-5 hover:shadow-lg transition space-y-3 border-lime-100 flex flex-col justify-between';
                 card.innerHTML = `
@@ -1292,15 +1268,25 @@
                             <h3 class="font-bold text-slate-800 text-sm truncate flex items-center gap-1.5"><i data-lucide="${repo.private?'lock':'globe'}" class="w-4 h-4 text-slate-400"></i>${repo.name}</h3>
                             <span class="text-[10px] px-2 py-0.5 rounded-full ${repo.private?'bg-amber-100 text-amber-700':'bg-lime-100 text-lime-700'} font-semibold">${repo.private?'Private':'Public'}</span>
                         </div>
-                        <p class="text-xs text-slate-500 mt-1 line-clamp-2">${repo.description || 'No description'}</p>
-                        ${!repo.private ? `<a href="${pagesUrl}" target="_blank" class="mt-2 inline-flex items-center gap-1 text-[10px] text-lime-600 hover:underline font-semibold"><i data-lucide="globe" class="w-3 h-3"></i>View Live Site</a>` : ''}
+                        <p class="text-xs text-slate-500 mt-1 line-clamp-2">${repo.description || 'No description provided'}</p>
                     </div>
+
                     <div class="space-y-2 pt-2 border-t border-slate-100">
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="triggerDeployPages('${repo.full_name}')" class="px-2 py-1.5 rounded-xl bg-lime-500 hover:bg-lime-600 text-white text-[11px] font-bold flex items-center justify-center gap-1 shadow-sm">
+                                <i data-lucide="globe" class="w-3.5 h-3.5"></i> Deploy Pages
+                            </button>
+                            <button onclick="triggerRepoBuild('${repo.full_name}')" class="px-2 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-[11px] font-bold flex items-center justify-center gap-1 shadow-sm">
+                                <i data-lucide="cpu" class="w-3.5 h-3.5 text-lime-400"></i> Trigger Build (APK)
+                            </button>
+                        </div>
+
                         <div class="grid grid-cols-3 gap-1.5">
                             <button onclick="openHistoryModal('${repo.full_name}')" class="px-1.5 py-1.5 rounded-xl glass-card hover:bg-lime-50 text-slate-700 text-[10px] font-semibold flex items-center justify-center gap-1"><i data-lucide="history" class="w-3 h-3 text-lime-600"></i>History</button>
-                            <button onclick="openBuildsModal('${repo.full_name}')" class="px-1.5 py-1.5 rounded-xl glass-card hover:bg-lime-50 text-slate-700 text-[10px] font-semibold flex items-center justify-center gap-1"><i data-lucide="box" class="w-3 h-3 text-lime-600"></i>Builds</button>
+                            <button onclick="openBuildsModal('${repo.full_name}')" class="px-1.5 py-1.5 rounded-xl glass-card hover:bg-lime-50 text-slate-700 text-[10px] font-semibold flex items-center justify-center gap-1"><i data-lucide="box" class="w-3 h-3 text-lime-600"></i>APK Status</button>
                             <button onclick="openAIFixForRepo('${repo.full_name}')" class="px-1.5 py-1.5 rounded-xl ai-badge text-white text-[10px] font-semibold flex items-center justify-center gap-1"><i data-lucide="brain-circuit" class="w-3 h-3"></i>AI Fix</button>
                         </div>
+
                         <div class="flex items-center justify-between text-xs pt-1">
                             <div class="flex items-center gap-3 text-slate-400 text-[11px]"><span>⭐${repo.stargazers_count}</span><span>🍴${repo.forks_count}</span></div>
                             <div class="flex items-center gap-1">
@@ -1327,7 +1313,7 @@
             document.getElementById('historyRepoTitle').innerText = `${repoFullName.split('/')[1]} - Commits`;
             document.getElementById('historyModal').classList.remove('hidden');
             const listEl = document.getElementById('historyCommitList');
-            listEl.innerHTML = '<div class="text-center py-6 text-slate-400 text-xs"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-1"></i>Loading...</div>';
+            listEl.innerHTML = '<div class="text-center py-6 text-slate-400 text-xs"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-1"></i>Loading commits...</div>';
             lucide.createIcons();
             try {
                 const res = await fetch(`https://api.github.com/repos/${repoFullName}/commits?per_page=20`, { headers: { 'Authorization': `token ${githubToken}` } });
@@ -1366,10 +1352,10 @@
             } catch (err) { showToast('Rollback Error', err.message, 'error'); }
         }
 
-        // ============ BUILDS MODAL ============
+        // ============ BUILDS & APK ARTIFACTS MODAL ============
         async function openBuildsModal(repoFullName) {
             activeModalRepo = repoFullName;
-            document.getElementById('buildsRepoTitle').innerText = `${repoFullName.split('/')[1]} - Builds & Artifacts`;
+            document.getElementById('buildsRepoTitle').innerText = `${repoFullName.split('/')[1]} - Builds & APK Downloads`;
             document.getElementById('buildsModal').classList.remove('hidden');
             document.getElementById('liveBuildBanner').classList.add('hidden');
             await refreshBuilds();
@@ -1383,7 +1369,7 @@
 
         async function refreshBuilds() {
             const contentEl = document.getElementById('buildsContent');
-            contentEl.innerHTML = '<div class="text-center py-6 text-slate-400 text-xs"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-1"></i>Loading...</div>';
+            contentEl.innerHTML = '<div class="text-center py-6 text-slate-400 text-xs"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-1"></i>Loading builds & APKs...</div>';
             lucide.createIcons();
             try {
                 const [artRes, relRes, runsRes] = await Promise.all([
@@ -1400,36 +1386,40 @@
                 else { activeBuildRunId = null; document.getElementById('liveBuildBanner').classList.add('hidden'); }
 
                 let html = '<div class="space-y-4">';
+                
+                // Releases & APK section
+                html += `<div><h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1"><i data-lucide="smartphone" class="w-4 h-4 text-lime-600"></i> Releases & Compiled APKs</h4>`;
+                if (releases.length === 0) html += '<div class="glass-card p-3 rounded-2xl text-xs text-slate-400 text-center">No releases or APK artifacts found.</div>';
+                else releases.forEach(rel => {
+                    html += `<div class="glass-card p-3 rounded-2xl space-y-2 mb-2">
+                        <div class="flex justify-between items-center"><span class="font-bold text-xs text-slate-800">${rel.name || rel.tag_name}</span><span class="text-[10px] px-2 py-0.5 rounded-full bg-lime-100 text-lime-700 font-bold">${rel.tag_name}</span></div>
+                        <div class="space-y-1">${rel.assets.map(a => `<div class="flex justify-between items-center bg-white/80 px-2.5 py-1.5 rounded-xl border border-slate-100 text-xs"><span class="truncate font-mono text-slate-700 text-[11px]">${a.name}</span><a href="${a.browser_download_url}" target="_blank" class="px-2.5 py-1 rounded-lg premium-gradient text-white font-bold text-[10px] flex items-center gap-1"><i data-lucide="download" class="w-3 h-3"></i> Download APK</a></div>`).join('')}</div>
+                    </div>`;
+                });
+                html += `</div>`;
+
+                // Actions Runs Section
                 if (runsData.workflow_runs?.length > 0) {
-                    html += `<div><h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1"><i data-lucide="activity" class="w-4 h-4 text-lime-600"></i> Recent Runs</h4>`;
+                    html += `<div class="pt-2 border-t border-slate-200"><h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1"><i data-lucide="activity" class="w-4 h-4 text-lime-600"></i> Action Workflow Runs</h4>`;
                     runsData.workflow_runs.slice(0,5).forEach(run => {
                         html += `<div class="glass-card p-3 rounded-2xl mb-2 space-y-1.5">
                             <div class="flex justify-between items-center">
-                                <span class="font-bold text-xs text-slate-800">${run.name || 'Workflow'}</span>
+                                <span class="font-bold text-xs text-slate-800">${run.name || 'Build Workflow'}</span>
                                 <span class="text-[10px] px-2 py-0.5 rounded-full font-bold ${run.conclusion==='success'?'bg-green-100 text-green-700':run.conclusion==='failure'?'bg-red-100 text-red-700':'bg-amber-100 text-amber-700'}">${run.conclusion || run.status}</span>
                             </div>
                             <p class="text-[10px] text-slate-400">#${run.run_number} • ${run.head_branch} • ${new Date(run.created_at).toLocaleString()}</p>
                             <div class="flex gap-1.5 mt-1 flex-wrap">
                                 ${run.conclusion === 'failure' ? `<button onclick="aiFixBuildFailure(${run.id})" class="px-2.5 py-1 rounded-lg ai-badge text-white font-semibold text-[10px] flex items-center gap-1"><i data-lucide="brain-circuit" class="w-3 h-3"></i>AI Fix & Rebuild</button>` : ''}
-                                <a href="${run.html_url}" target="_blank" class="px-2.5 py-1 rounded-lg glass-card hover:bg-lime-50 text-slate-700 font-semibold text-[10px] flex items-center gap-1"><i data-lucide="external-link" class="w-3 h-3"></i>View Log</a>
+                                <a href="${run.html_url}" target="_blank" class="px-2.5 py-1 rounded-lg glass-card hover:bg-lime-50 text-slate-700 font-semibold text-[10px] flex items-center gap-1"><i data-lucide="external-link" class="w-3 h-3"></i>View Logs</a>
                             </div>
                         </div>`;
                     });
                     html += `</div>`;
                 }
 
-                html += `<div class="pt-2 border-t border-slate-200"><h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1"><i data-lucide="tag" class="w-4 h-4 text-lime-600"></i> Releases & APKs</h4>`;
-                if (releases.length === 0) html += '<div class="glass-card p-3 rounded-2xl text-xs text-slate-400 text-center">No releases yet.</div>';
-                else releases.forEach(rel => {
-                    html += `<div class="glass-card p-3 rounded-2xl space-y-2 mb-2">
-                        <div class="flex justify-between items-center"><span class="font-bold text-xs text-slate-800">${rel.name || rel.tag_name}</span><span class="text-[10px] px-2 py-0.5 rounded-full bg-lime-100 text-lime-700 font-bold">${rel.tag_name}</span></div>
-                        <div class="space-y-1">${rel.assets.map(a => `<div class="flex justify-between items-center bg-white/80 px-2.5 py-1.5 rounded-xl border border-slate-100 text-xs"><span class="truncate font-mono text-slate-700 text-[11px]">${a.name}</span><a href="${a.browser_download_url}" target="_blank" class="px-2.5 py-1 rounded-lg premium-gradient text-white font-bold text-[10px] flex items-center gap-1"><i data-lucide="download" class="w-3 h-3"></i>Download</a></div>`).join('')}</div>
-                    </div>`;
-                });
-                html += `</div>`;
-
-                html += `<div class="pt-2 border-t border-slate-200"><h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1"><i data-lucide="cpu" class="w-4 h-4 text-lime-600"></i> Build Artifacts</h4>`;
-                if (!artData.artifacts?.length) html += '<div class="glass-card p-3 rounded-2xl text-xs text-slate-400 text-center">No artifacts.</div>';
+                // Action Artifacts
+                html += `<div class="pt-2 border-t border-slate-200"><h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1"><i data-lucide="cpu" class="w-4 h-4 text-lime-600"></i> Artifact Outputs</h4>`;
+                if (!artData.artifacts?.length) html += '<div class="glass-card p-3 rounded-2xl text-xs text-slate-400 text-center">No build artifacts stored.</div>';
                 else artData.artifacts.forEach(art => {
                     const sizeMb = (art.size_in_bytes/(1024*1024)).toFixed(2);
                     html += `<div class="glass-card p-3 rounded-2xl flex flex-col sm:flex-row justify-between sm:items-center gap-2 mb-2">
@@ -1437,6 +1427,7 @@
                     </div>`;
                 });
                 html += `</div></div>`;
+
                 contentEl.innerHTML = html;
                 lucide.createIcons();
             } catch (err) { contentEl.innerHTML = `<div class="text-center py-4 text-red-500 text-xs">${err.message}</div>`; }
@@ -1475,11 +1466,10 @@
                         if (job.conclusion === 'success') {
                             if (icon) { icon.className = 'p-1.5 rounded-lg bg-green-100 text-green-600'; icon.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4"></i>'; }
                             document.getElementById('liveBuildStatus').innerText = 'Build Succeeded ✅';
-                            showToast('Build Success', 'Artifact ready');
+                            showToast('Build Completed', 'APK / Output ready');
                         } else {
                             if (icon) { icon.className = 'p-1.5 rounded-lg bg-red-100 text-red-600'; icon.innerHTML = '<i data-lucide="x-circle" class="w-4 h-4"></i>'; }
                             document.getElementById('liveBuildStatus').innerText = 'Build Failed ❌';
-                            showToast('Build Failed', 'Use AI Fix');
                         }
                         lucide.createIcons();
                         setTimeout(refreshBuilds, 2000);
@@ -1493,7 +1483,7 @@
         // ============ AI BUILD FAILURE FIX ============
         async function aiFixBuildFailure(runId) {
             if (!geminiApiKey) return showToast('AI Required', 'Set Gemini API key in Settings', 'error');
-            document.getElementById('aiFixContent').innerHTML = '<div class="text-center py-8 text-slate-400"><i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-purple-500"></i><p class="text-xs">Fetching build logs...</p></div>';
+            document.getElementById('aiFixContent').innerHTML = '<div class="text-center py-8 text-slate-400"><i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-purple-500"></i><p class="text-xs">Fetching build error details...</p></div>';
             document.getElementById('aiFixModal').classList.remove('hidden');
             lucide.createIcons();
 
@@ -1502,20 +1492,19 @@
                 if (!jobsRes.ok) throw new Error('Could not fetch jobs');
                 const jobsData = await jobsRes.json();
                 const job = jobsData.jobs?.[0];
-                if (!job) throw new Error('No jobs found');
+                if (!job) throw new Error('No job steps found');
 
-                let logs = 'Logs summary unavailable';
                 const failedStep = job.steps?.find(s => s.conclusion === 'failure');
-                const failedStepName = failedStep?.name || 'unknown step';
+                const failedStepName = failedStep?.name || 'unknown build step';
 
                 document.getElementById('aiFixContent').innerHTML = `
                     <div class="glass-card p-3 rounded-xl">
                         <h4 class="text-xs font-bold text-slate-700 mb-1">Failed Step: <span class="text-red-600">${failedStepName}</span></h4>
                     </div>
-                    <div class="text-center py-4"><i data-lucide="brain-circuit" class="w-6 h-6 text-purple-500 animate-pulse mx-auto"></i><p class="text-xs text-slate-500 mt-2">Gemini analyzing build error...</p></div>`;
+                    <div class="text-center py-4"><i data-lucide="brain-circuit" class="w-6 h-6 text-purple-500 animate-pulse mx-auto"></i><p class="text-xs text-slate-500 mt-2">Gemini analyzing build log...</p></div>`;
                 lucide.createIcons();
 
-                const prompt = `GitHub Actions build failed at step: ${failedStepName} in repository ${activeModalRepo}. Suggest a fix for common errors in this build setup.`;
+                const prompt = `GitHub Actions build failed at step: ${failedStepName} in repository ${activeModalRepo}. Suggest a fix for this build failure.`;
                 const aiResponse = await callGemini(prompt, 'You are an expert CI/CD software engineer.');
 
                 document.getElementById('aiFixContent').innerHTML = `
@@ -1529,4 +1518,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
