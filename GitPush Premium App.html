@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitPush Premium - AI GitHub Publisher</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <meta name="theme-color" content="#84cc16">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="GitPush Premium">
+    <link rel="apple-touch-icon" href="https://api.iconify.design/lucide:git-upload.svg?color=%2384cc16&width=180&height=180">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2384cc16' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242'/><path d='M12 13v9'/><path d='m16 16-4-4-4 4'/></svg>">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        lime: { 400: '#a3e635', 500: '#84cc16', 600: '#65a30d' },
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'shimmer': 'shimmer 2s infinite linear',
+                    },
+                    keyframes: {
+                        float: { '0%, 100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-10px)' } },
+                        shimmer: { '0%': { backgroundPosition: '-1000px 0' }, '100%': { backgroundPosition: '1000px 0' } }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #ecfdf5 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background-attachment: fixed;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px 0 rgba(132, 204, 22, 0.08);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.03);
+        }
+        .glass-input {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(203, 213, 225, 0.6);
+            transition: all 0.2s ease;
+        }
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #84cc16;
+            box-shadow: 0 0 0 3px rgba(132, 204, 22, 0.2);
+            outline: none;
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(132, 204, 22, 0.3); border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(132, 204, 22, 0.6); }
+        
+        .premium-gradient {
+            background: linear-gradient(135deg, #84cc16 0%, #65a30d 50%, #4d7c0f 100%);
+        }
+        .progress-glow {
+            box-shadow: 0 0 15px rgba(132, 204, 22, 0.6), 0 0 30px rgba(132, 204, 22, 0.3);
+        }
+        .ai-badge {
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+    </style>
+</head>
+<body class="text-slate-800 pb-24 md:pb-6">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-40 glass-panel px-6 py-4 mb-6">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl premium-gradient flex items-center justify-center text-white shadow-lg shadow-lime-500/30">
+                    <i data-lucide="git-upload" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-xl tracking-tight text-slate-900 flex items-center gap-2">
+                        GitPush <span class="text-xs px-2 py-0.5 rounded-full premium-gradient text-white font-bold">PREMIUM</span>
+                    </h1>
+                    <p class="text-[11px] text-slate-500 flex items-center gap-1">
+                        <i data-lucide="sparkles" class="w-3 h-3 text-purple-500"></i>
+                        AI-Powered GitHub Publisher & File Uploader
+                    </p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <button id="pwaInstallBtn" onclick="installPWA()" class="hidden px-3 py-1.5 rounded-full premium-gradient text-white text-xs font-semibold hover:opacity-90 transition flex items-center gap-1.5 shadow-md">
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                    <span>Install</span>
+                </button>
+                <div id="connectionStatus" class="flex items-center gap-2 px-3 py-1.5 rounded-full glass-card text-xs font-medium text-slate-500">
+                    <span class="w-2 h-2 rounded-full bg-slate-400" id="statusDot"></span>
+                    <span id="statusText">Not Connected</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4">
+        
+        <!-- Toast -->
+        <div id="toast" class="hidden fixed top-20 right-4 z-50 max-w-sm glass-panel p-4 rounded-2xl border-l-4 border-lime-500 shadow-xl transition-all duration-300">
+            <div class="flex items-start gap-3">
+                <div id="toastIcon" class="text-lime-600 mt-0.5"><i data-lucide="info" class="w-5 h-5"></i></div>
+                <div class="flex-1">
+                    <h4 id="toastTitle" class="font-semibold text-sm text-slate-800">Notice</h4>
+                    <p id="toastMessage" class="text-xs text-slate-600 mt-0.5">Something happened.</p>
+                </div>
+                <button onclick="hideToast()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+        </div>
+
+        <!-- TAB 1: HOME -->
+        <section id="tab-home" class="tab-content space-y-6">
+            <div id="noTokenAlert" class="glass-panel rounded-3xl p-6 border-lime-200 bg-gradient-to-r from-lime-50/50 to-white">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="p-3 bg-lime-100 text-lime-700 rounded-2xl">
+                            <i data-lucide="key-round" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800">GitHub Connect Required</h3>
+                            <p class="text-sm text-slate-600">Settings থেকে Personal Access Token দিলে অটো সেভ থাকবে।</p>
+                        </div>
+                    </div>
+                    <button onclick="switchTab('settings')" class="w-full md:w-auto px-5 py-2.5 premium-gradient text-white font-semibold rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-sm">
+                        <span>Settings এ যান</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <i data-lucide="file-up" class="w-5 h-5 text-lime-600"></i>
+                            Upload & Merge HTML / ZIP / Any Project Files
+                        </h2>
+                        <p class="text-xs text-slate-500">ZIP ফাইল বা সরাসরি HTML, CSS, JS ফাইল নির্বাচন করুন। সম্পূর্ণ ফোল্ডার স্ট্রাকচারে গিটহাবে মার্জ হবে।</p>
+                    </div>
+                    <div class="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-full ai-badge text-white text-[10px] font-bold">
+                        <i data-lucide="brain-circuit" class="w-3 h-3"></i> AI BUG FIX
+                    </div>
+                </div>
+
+                <div id="dropZone" onclick="document.getElementById('fileInput').click()" 
+                     class="border-2 border-dashed border-lime-300 hover:border-lime-500 bg-lime-50/30 hover:bg-lime-50/70 rounded-3xl p-8 text-center cursor-pointer transition-all group">
+                    <!-- Multiple files or single HTML files now properly handled -->
+                    <input type="file" id="fileInput" class="hidden" multiple onchange="handleFileSelect(event)">
+                    <div class="w-16 h-16 rounded-2xl bg-white shadow-md mx-auto flex items-center justify-center text-lime-500 group-hover:scale-110 transition-transform mb-3 border border-lime-100">
+                        <i data-lucide="folder-archive" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-semibold text-slate-700 text-sm">Click to Select HTML / ZIP / Any Files</h3>
+                    <p class="text-xs text-slate-400 mt-1">HTML, CSS, JS অথবা ZIP ফাইল নির্বাচন করুন। অটোমেটিক রিমোট রিপোজিটরিতে মার্জ (Merge) হয়ে যাবে।</p>
+                </div>
+
+                <div id="filePreviewSection" class="hidden space-y-3">
+                    <div class="flex justify-between items-center text-xs text-slate-500 font-semibold px-1">
+                        <span id="fileCountText">0 Files ready</span>
+                        <button onclick="clearSelectedFiles()" class="text-red-500 hover:underline flex items-center gap-1">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Clear All
+                        </button>
+                    </div>
+                    <div id="fileList" class="max-h-60 overflow-y-auto glass-card rounded-2xl p-3 space-y-2 text-xs"></div>
+                </div>
+
+                <div class="space-y-4 pt-4 border-t border-slate-200/60">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Target Repository</label>
+                            <div class="relative">
+                                <button type="button" id="repoSelectBtn" onclick="toggleRepoDropdown()" class="w-full glass-input px-4 py-2.5 rounded-2xl text-sm font-medium text-slate-700 flex justify-between items-center text-left">
+                                    <span id="selectedRepoText" class="truncate">-- Choose Repository --</span>
+                                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
+                                </button>
+                                <input type="hidden" id="repoSelect" value="">
+                                <div id="repoDropdownMenu" class="hidden absolute top-full left-0 right-0 mt-2 z-50 bg-slate-900/95 backdrop-blur-xl border border-slate-700/60 rounded-2xl p-2 shadow-2xl max-h-60 overflow-y-auto space-y-1">
+                                    <div id="repoDropdownOptions" class="space-y-1 text-xs">
+                                        <div class="px-3 py-2 text-slate-400 italic">No repos loaded</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Target Branch</label>
+                            <input type="text" id="branchInput" value="main" placeholder="e.g. main" class="w-full glass-input px-4 py-2 rounded-2xl text-sm">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Commit Message</label>
+                        <input type="text" id="commitMessage" value="Merged & Extracted via GitPush Premium" class="w-full glass-input px-4 py-2.5 rounded-2xl text-sm">
+                    </div>
+
+                    <!-- AI Toggle -->
+                    <div class="glass-card rounded-2xl p-4 border-purple-200/50 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="p-1.5 rounded-lg ai-badge text-white">
+                                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-800">AI Code Auto-Fix (Gemini)</h4>
+                                    <p class="text-[10px] text-slate-500">Scan & auto-correct bugs before committing</p>
+                                </div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="aiAutoFixToggle" class="sr-only peer">
+                                <div class="w-11 h-6 bg-slate-300 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500"></div>
+                            </label>
+                        </div>
+                        <p id="aiStatusText" class="text-[10px] text-slate-400 italic">Set Gemini API key in Settings</p>
+                    </div>
+
+                    <!-- Progress -->
+                    <div id="pushProgressContainer" class="hidden space-y-3 glass-card p-4 rounded-2xl border-lime-300">
+                        <div class="flex justify-between items-center text-xs font-semibold text-slate-700">
+                            <span id="progressStatusText" class="flex items-center gap-2">
+                                <i data-lucide="loader-2" class="w-4 h-4 text-lime-600 animate-spin"></i>
+                                <span>Preparing...</span>
+                            </span>
+                            <span id="progressPercentText" class="text-lime-600 font-bold">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                            <div id="progressBar" class="premium-gradient h-full w-0 transition-all duration-300 progress-glow rounded-full"></div>
+                        </div>
+                        <div id="progressSteps" class="text-[10px] text-slate-500 space-y-0.5 max-h-24 overflow-y-auto font-mono"></div>
+                    </div>
+
+                    <button onclick="executePush()" id="pushBtn" class="w-full py-3.5 premium-gradient text-white font-bold rounded-2xl shadow-xl shadow-lime-500/30 transition flex items-center justify-center gap-2 hover:opacity-95 active:scale-[0.99]">
+                        <i data-lucide="git-merge" class="w-5 h-5"></i>
+                        <span>Upload & Merge Push to GitHub</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: REPOSITORIES -->
+        <section id="tab-repos" class="tab-content space-y-6 hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Repositories</h2>
+                    <p class="text-xs text-slate-500">Manage repos, deploy pages & trigger APK builds.</p>
+                </div>
+                <button onclick="openCreateRepoModal()" class="px-4 py-2.5 premium-gradient text-white font-semibold rounded-2xl shadow-lg text-xs flex items-center justify-center gap-2">
+                    <i data-lucide="plus" class="w-4 h-4"></i> New Repo
+                </button>
+            </div>
+
+            <div class="glass-panel p-2.5 rounded-2xl flex items-center gap-2">
+                <i data-lucide="search" class="w-4 h-4 text-slate-400 ml-2"></i>
+                <input type="text" id="repoSearch" oninput="filterRepos()" placeholder="Search repositories..." class="bg-transparent border-none outline-none text-sm w-full text-slate-700 placeholder-slate-400">
+            </div>
+
+            <div id="repoListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="col-span-full glass-panel rounded-3xl p-8 text-center text-slate-400">
+                    <i data-lucide="github" class="w-12 h-12 mx-auto mb-2 opacity-40"></i>
+                    <p class="text-sm">Connect GitHub Token in Settings.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: SETTINGS -->
+        <section id="tab-settings" class="tab-content space-y-6 hidden">
+            <div class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <i data-lucide="settings" class="w-5 h-5 text-lime-600"></i>
+                        GitHub Credentials
+                    </h2>
+                    <p class="text-xs text-slate-500">Requires Personal Access Token (PAT) with 'repo', 'workflow' scopes.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">GitHub Personal Access Token</label>
+                        <div class="relative">
+                            <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="w-full glass-input px-4 py-3 rounded-2xl text-sm pr-12">
+                            <button onclick="toggleTokenVisibility()" class="absolute right-3 top-3 text-slate-400 hover:text-slate-600">
+                                <i data-lucide="eye" id="eyeIcon" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                        <p class="text-[10px] text-green-600 mt-1 flex items-center gap-1">
+                            <i data-lucide="lock" class="w-3 h-3"></i>
+                            একবার সেভ করলে স্থায়ীভাবে Local Storage এ থাকবে
+                        </p>
+                    </div>
+                    <div class="flex gap-3 flex-wrap">
+                        <button onclick="saveAndVerifyToken()" class="px-6 py-2.5 premium-gradient text-white font-semibold rounded-2xl shadow-lg text-sm flex items-center gap-2">
+                            <i data-lucide="check-circle" class="w-4 h-4"></i> Save & Test
+                        </button>
+                        <button onclick="removeToken()" class="px-4 py-2.5 glass-card text-red-500 hover:bg-red-50 font-medium rounded-2xl text-sm">Remove</button>
+                    </div>
+                </div>
+
+                <!-- Gemini AI -->
+                <div class="pt-4 border-t border-slate-200/60 space-y-4">
+                    <div class="flex items-center gap-2">
+                        <div class="p-2 rounded-xl ai-badge text-white">
+                            <i data-lucide="brain-circuit" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-800">Gemini AI Integration</h3>
+                            <p class="text-[11px] text-slate-500">Auto-fix bugs & optimize code before commit</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Gemini API Key</label>
+                        <div class="relative">
+                            <input type="password" id="geminiKeyInput" placeholder="AIzaSy..." class="w-full glass-input px-4 py-3 rounded-2xl text-sm pr-12">
+                            <button onclick="toggleGeminiVisibility()" class="absolute right-3 top-3 text-slate-400 hover:text-slate-600">
+                                <i data-lucide="eye" id="geminiEyeIcon" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="saveGeminiKey()" class="px-4 py-2.5 ai-badge text-white font-semibold rounded-2xl text-xs flex items-center justify-center gap-1.5">
+                            <i data-lucide="save" class="w-3.5 h-3.5"></i> Save AI Key
+                        </button>
+                        <button onclick="testGeminiConnection()" class="px-4 py-2.5 glass-card text-purple-600 hover:bg-purple-50 font-semibold rounded-2xl text-xs flex items-center justify-center gap-1.5 border border-purple-200">
+                            <i data-lucide="zap" class="w-3.5 h-3.5"></i> Test AI Connection
+                        </button>
+                    </div>
+                    <div id="geminiStatus" class="hidden glass-card p-3 rounded-xl text-xs"></div>
+                </div>
+
+                <div id="userProfileCard" class="hidden glass-card rounded-2xl p-4 flex items-center gap-4 border-lime-200">
+                    <img id="userAvatar" src="" class="w-12 h-12 rounded-full border-2 border-lime-500">
+                    <div>
+                        <h4 id="userName" class="font-bold text-sm text-slate-800">User</h4>
+                        <p id="userBio" class="text-xs text-slate-500">@username</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <nav class="fixed bottom-0 left-0 right-0 z-40 glass-nav px-6 py-3">
+        <div class="max-w-md mx-auto flex justify-around items-center">
+            <button onclick="switchTab('home')" id="nav-home" class="nav-item flex flex-col items-center gap-1 text-lime-600 font-semibold transition">
+                <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+                <span class="text-[11px]">Push & Upload</span>
+            </button>
+            <button onclick="switchTab('repos')" id="nav-repos" class="nav-item flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition">
+                <i data-lucide="folder-git-2" class="w-6 h-6"></i>
+                <span class="text-[11px]">Repos</span>
+            </button>
+            <button onclick="switchTab('settings')" id="nav-settings" class="nav-item flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition">
+                <i data-lucide="sliders" class="w-6 h-6"></i>
+                <span class="text-[11px]">Settings</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+        <div class="glass-panel max-w-lg w-full rounded-3xl p-6 space-y-4 shadow-2xl max-h-[85vh] flex flex-col">
+            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+                <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                    <i data-lucide="history" class="w-5 h-5 text-lime-600"></i>
+                    <span id="historyRepoTitle">Commit History</span>
+                </h3>
+                <button onclick="closeHistoryModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div id="historyCommitList" class="overflow-y-auto space-y-3 flex-1 pr-1">
+                <div class="text-center py-6 text-slate-400 text-xs">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Builds Modal -->
+    <div id="buildsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+        <div class="glass-panel max-w-2xl w-full rounded-3xl p-6 space-y-4 shadow-2xl max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+                <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                    <i data-lucide="box" class="w-5 h-5 text-lime-600"></i>
+                    <span id="buildsRepoTitle">Builds & APK Status</span>
+                </h3>
+                <button onclick="closeBuildsModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            
+            <div id="liveBuildBanner" class="hidden glass-card rounded-2xl p-3 border-lime-300 bg-gradient-to-r from-lime-50 to-white">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <div id="liveBuildIcon" class="p-1.5 rounded-lg bg-amber-100 text-amber-600">
+                            <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+                        </div>
+                        <div>
+                            <p id="liveBuildStatus" class="text-xs font-bold text-slate-800">Build Running...</p>
+                            <p id="liveBuildMeta" class="text-[10px] text-slate-500">Initializing</p>
+                        </div>
+                    </div>
+                    <button onclick="refreshBuilds()" class="p-1.5 rounded-lg hover:bg-white/60 text-slate-500">
+                        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <div class="mt-2 w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                    <div id="liveBuildProgress" class="premium-gradient h-full w-0 transition-all duration-500 rounded-full"></div>
+                </div>
+            </div>
+            
+            <div id="buildsContent" class="overflow-y-auto space-y-4 flex-1 pr-1">
+                <div class="text-center py-6 text-slate-400 text-xs">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Repo Modal -->
+    <div id="createRepoModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+        <div class="glass-panel max-w-md w-full rounded-3xl p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+                <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                    <i data-lucide="folder-plus" class="w-5 h-5 text-lime-600"></i>
+                    Create Repository
+                </h3>
+                <button onclick="closeCreateRepoModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Name *</label>
+                    <input type="text" id="newRepoName" placeholder="my-awesome-app" class="w-full glass-input px-4 py-2.5 rounded-2xl text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Description</label>
+                    <input type="text" id="newRepoDesc" placeholder="Project description" class="w-full glass-input px-4 py-2.5 rounded-2xl text-sm">
+                </div>
+                <div class="flex items-center gap-2 pt-1">
+                    <input type="checkbox" id="newRepoPrivate" class="rounded text-lime-500 w-4 h-4">
+                    <label for="newRepoPrivate" class="text-xs font-medium text-slate-700">Private Repository</label>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeCreateRepoModal()" class="px-4 py-2 glass-card rounded-xl text-xs font-medium text-slate-600">Cancel</button>
+                <button onclick="submitCreateRepo()" class="px-5 py-2 premium-gradient text-white font-bold rounded-xl text-xs">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Repo Modal -->
+    <div id="editRepoModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+        <div class="glass-panel max-w-md w-full rounded-3xl p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+                <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                    <i data-lucide="edit-3" class="w-5 h-5 text-lime-600"></i>
+                    Edit Repository
+                </h3>
+                <button onclick="closeEditRepoModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <input type="hidden" id="editRepoOriginalName">
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Name</label>
+                    <input type="text" id="editRepoName" class="w-full glass-input px-4 py-2.5 rounded-2xl text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Description</label>
+                    <input type="text" id="editRepoDesc" class="w-full glass-input px-4 py-2.5 rounded-2xl text-sm">
+                </div>
+                <div class="flex items-center gap-2 pt-1">
+                    <input type="checkbox" id="editRepoPrivate" class="rounded text-lime-500 w-4 h-4">
+                    <label for="editRepoPrivate" class="text-xs font-medium text-slate-700">Private</label>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeEditRepoModal()" class="px-4 py-2 glass-card rounded-xl text-xs font-medium text-slate-600">Cancel</button>
+                <button onclick="submitEditRepo()" class="px-5 py-2 premium-gradient text-white font-bold rounded-xl text-xs">Update</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Fix Modal -->
+    <div id="aiFixModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+        <div class="glass-panel max-w-lg w-full rounded-3xl p-6 space-y-4 shadow-2xl max-h-[85vh] flex flex-col">
+            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+                <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                    <div class="p-1.5 rounded-lg ai-badge text-white"><i data-lucide="brain-circuit" class="w-4 h-4"></i></div>
+                    AI Bug Fix Assistant
+                </h3>
+                <button onclick="closeAiFixModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div id="aiFixContent" class="overflow-y-auto space-y-3 flex-1 text-sm"></div>
+        </div>
+    </div>
+
+    <script>
+        // ============ GLOBAL STATE ============
+        let githubToken = localStorage.getItem('gh_token') || '';
+        let geminiApiKey = localStorage.getItem('gemini_key') || '';
+        let currentUser = JSON.parse(localStorage.getItem('gh_user') || 'null');
+        let repositories = [];
+        let preparedFiles = [];
+        let deferredPrompt = null;
+        let activeModalRepo = '';
+        let buildPollingInterval = null;
+        let activeBuildRunId = null;
+
+        const GEMINI_MODELS = [
+            'gemini-2.5-flash',
+            'gemini-2.0-flash',
+            'gemini-1.5-flash'
+        ];
+        const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
+
+        // ============ PWA SETUP ============
+        (function setupPWA() {
+            const manifestObj = {
+                name: "GitPush Premium",
+                short_name: "GitPush",
+                description: "Auto Unzip, Merge Push & Deploy to GitHub Pages / Build APK",
+                start_url: "./",
+                display: "standalone",
+                background_color: "#f8fafc",
+                theme_color: "#84cc16",
+                orientation: "portrait-primary",
+                icons: [
+                    { src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='192' height='192' viewBox='0 0 24 24' fill='none' stroke='%2384cc16' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242'/><path d='M12 13v9'/><path d='m16 16-4-4-4 4'/></svg>", sizes: "192x192", type: "image/svg+xml" }
+                ]
+            };
+            const blob = new Blob([JSON.stringify(manifestObj)], { type: 'application/json' });
+            const link = document.createElement('link');
+            link.rel = 'manifest';
+            link.href = URL.createObjectURL(blob);
+            document.head.appendChild(link);
+        })();
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('pwaInstallBtn').classList.remove('hidden');
+        });
+
+        async function installPWA() {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') document.getElementById('pwaInstallBtn').classList.add('hidden');
+            deferredPrompt = null;
+        }
+
+        // ============ INIT ============
+        window.addEventListener('load', () => {
+            lucide.createIcons();
+            setupDragAndDrop();
+            
+            if (githubToken) {
+                document.getElementById('tokenInput').value = githubToken;
+                if (currentUser) {
+                    updateConnectionUI(true, currentUser);
+                    fetchRepositories();
+                } else {
+                    verifyTokenAndLoadData();
+                }
+            }
+            if (geminiApiKey) {
+                document.getElementById('geminiKeyInput').value = geminiApiKey;
+                updateGeminiStatus();
+            }
+            document.addEventListener('click', (e) => {
+                const btn = document.getElementById('repoSelectBtn');
+                const menu = document.getElementById('repoDropdownMenu');
+                if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) menu.classList.add('hidden');
+            });
+        });
+
+        // ============ TOAST ============
+        function showToast(title, message, type = 'info') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastMessage').innerText = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => hideToast(), 6000);
+        }
+        function hideToast() { document.getElementById('toast').classList.add('hidden'); }
+
+        // ============ TABS ============
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(el => { el.classList.remove('text-lime-600','font-semibold'); el.classList.add('text-slate-400'); });
+            document.getElementById(`nav-${tabName}`).classList.remove('text-slate-400');
+            document.getElementById(`nav-${tabName}`).classList.add('text-lime-600','font-semibold');
+        }
+
+        // ============ TOKEN MANAGEMENT ============
+        function toggleTokenVisibility() {
+            const inp = document.getElementById('tokenInput');
+            const eye = document.getElementById('eyeIcon');
+            inp.type = inp.type === 'password' ? 'text' : 'password';
+            eye.setAttribute('data-lucide', inp.type === 'password' ? 'eye' : 'eye-off');
+            lucide.createIcons();
+        }
+
+        async function saveAndVerifyToken() {
+            const v = document.getElementById('tokenInput').value.trim();
+            if (!v) return showToast('Warning', 'Enter PAT Token', 'error');
+            githubToken = v;
+            localStorage.setItem('gh_token', githubToken);
+            await verifyTokenAndLoadData();
+        }
+
+        function removeToken() {
+            if (!confirm('Remove saved GitHub token?')) return;
+            localStorage.removeItem('gh_token');
+            localStorage.removeItem('gh_user');
+            githubToken = ''; currentUser = null; repositories = [];
+            document.getElementById('tokenInput').value = '';
+            updateConnectionUI(false); renderRepoDropdownOptions(); renderRepoList([]);
+            showToast('Disconnected', 'Token removed');
+        }
+
+        async function verifyTokenAndLoadData() {
+            try {
+                const res = await fetch('https://api.github.com/user', { headers: { 'Authorization': `token ${githubToken}` } });
+                if (!res.ok) throw new Error('Invalid');
+                currentUser = await res.json();
+                localStorage.setItem('gh_user', JSON.stringify(currentUser));
+                updateConnectionUI(true, currentUser);
+                showToast('Connected ✅', `@${currentUser.login} — connected successfully`);
+                await fetchRepositories();
+            } catch (err) {
+                updateConnectionUI(false);
+                showToast('Connection Failed', 'Invalid token or network error', 'error');
+            }
+        }
+
+        function updateConnectionUI(isConnected, user = null) {
+            document.getElementById('statusDot').className = isConnected ? 'w-2 h-2 rounded-full bg-lime-500 animate-pulse' : 'w-2 h-2 rounded-full bg-slate-400';
+            document.getElementById('statusText').innerText = isConnected && user ? `@${user.login}` : 'Not Connected';
+            document.getElementById('noTokenAlert').classList.toggle('hidden', isConnected);
+            const card = document.getElementById('userProfileCard');
+            if (isConnected && user) {
+                card.classList.remove('hidden');
+                document.getElementById('userAvatar').src = user.avatar_url;
+                document.getElementById('userName').innerText = user.name || user.login;
+                document.getElementById('userBio').innerText = `@${user.login}`;
+            } else card.classList.add('hidden');
+        }
+
+        // ============ GEMINI AI ============
+        function toggleGeminiVisibility() {
+            const inp = document.getElementById('geminiKeyInput');
+            const eye = document.getElementById('geminiEyeIcon');
+            inp.type = inp.type === 'password' ? 'text' : 'password';
+            eye.setAttribute('data-lucide', inp.type === 'password' ? 'eye' : 'eye-off');
+            lucide.createIcons();
+        }
+
+        function saveGeminiKey() {
+            const k = document.getElementById('geminiKeyInput').value.trim();
+            if (!k) return showToast('Warning', 'Enter Gemini API key');
+            geminiApiKey = k;
+            localStorage.setItem('gemini_key', k);
+            updateGeminiStatus();
+            showToast('AI Key Saved ✨', 'Gemini key updated');
+        }
+
+        function updateGeminiStatus() {
+            const statusEl = document.getElementById('geminiStatus');
+            const aiToggleStatus = document.getElementById('aiStatusText');
+            if (geminiApiKey) {
+                statusEl.classList.remove('hidden');
+                statusEl.innerHTML = '<span class="flex items-center gap-1 text-green-600 font-semibold"><i data-lucide="check-circle" class="w-3 h-3"></i> Gemini API key saved</span>';
+                aiToggleStatus.innerText = '✅ AI active — Gemini ready to optimize code';
+                aiToggleStatus.className = 'text-[10px] text-green-600 font-medium';
+            } else {
+                statusEl.classList.add('hidden');
+                aiToggleStatus.innerText = 'Set Gemini API key in Settings';
+                aiToggleStatus.className = 'text-[10px] text-slate-400 italic';
+            }
+            lucide.createIcons();
+        }
+
+        async function callGemini(prompt, systemPrompt = 'You are a senior developer. Return only valid responses.') {
+            if (!geminiApiKey) throw new Error('Gemini API key not set in Settings.');
+
+            let lastError = null;
+            for (const model of GEMINI_MODELS) {
+                try {
+                    const url = `${GEMINI_BASE}/${model}:generateContent?key=${encodeURIComponent(geminiApiKey)}`;
+                    const body = {
+                        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+                        generationConfig: { temperature: 0.2, maxOutputTokens: 8192 }
+                    };
+                    if (systemPrompt) body.systemInstruction = { parts: [{ text: systemPrompt }] };
+
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(body)
+                    });
+
+                    if (!res.ok) {
+                        const errText = await res.text();
+                        let errMsg = errText;
+                        try {
+                            const errJson = JSON.parse(errText);
+                            errMsg = errJson.error?.message || errText;
+                        } catch (e) {}
+                        throw new Error(`Gemini API Error (${res.status}): ${errMsg.substring(0, 150)}`);
+                    }
+
+                    const data = await res.json();
+                    const candidate = data.candidates?.[0];
+                    const text = candidate?.content?.parts?.map(p => p.text || '').join('').trim();
+                    if (!text) throw new Error('Gemini returned an empty response.');
+                    return text;
+                } catch (err) {
+                    lastError = err;
+                    console.warn(`Gemini model ${model} failed:`, err.message);
+                }
+            }
+            throw lastError || new Error('Gemini API request failed.');
+        }
+
+        async function testGeminiConnection() {
+            if (!geminiApiKey) return showToast('AI Required', 'Save Gemini key first', 'error');
+            try {
+                showToast('Testing AI', 'Connecting to Gemini API...');
+                const reply = await callGemini('Respond with "OK"');
+                showToast('AI Connected ✅', 'Gemini is responding normally');
+                document.getElementById('geminiStatus').innerHTML = '<span class="flex items-center gap-1 text-green-600 font-semibold"><i data-lucide="check-circle" class="w-3 h-3"></i> AI Verified successfully!</span>';
+                lucide.createIcons();
+            } catch (err) {
+                showToast('AI Error ❌', err.message, 'error');
+            }
+        }
+
+        // ============ REPO DROPDOWN ============
+        function toggleRepoDropdown() { document.getElementById('repoDropdownMenu').classList.toggle('hidden'); }
+        function selectRepoOption(fullName) {
+            document.getElementById('repoSelect').value = fullName;
+            document.getElementById('selectedRepoText').innerText = fullName || '-- Choose Repository --';
+            renderRepoDropdownOptions();
+            document.getElementById('repoDropdownMenu').classList.add('hidden');
+        }
+        function renderRepoDropdownOptions() {
+            const container = document.getElementById('repoDropdownOptions');
+            const current = document.getElementById('repoSelect').value;
+            if (repositories.length === 0) { container.innerHTML = '<div class="px-3 py-2 text-slate-400 italic">Connect token to see repos</div>'; return; }
+            let html = `<label onclick="selectRepoOption('')" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-slate-800/80 transition text-slate-200"><span class="font-medium truncate">-- Choose Repository --</span><input type="radio" name="repoRadio" ${current===''?'checked':''} class="w-4 h-4 accent-lime-400"></label>`;
+            repositories.forEach(r => {
+                html += `<label onclick="selectRepoOption('${r.full_name}')" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-slate-800/80 transition text-slate-200"><span class="font-medium truncate">${r.full_name} ${r.private?'🔒':''}</span><input type="radio" name="repoRadio" ${current===r.full_name?'checked':''} class="w-4 h-4 accent-lime-400"></label>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // ============ FETCH REPOS ============
+        async function fetchRepositories() {
+            if (!githubToken) return;
+            try {
+                const res = await fetch('https://api.github.com/user/repos?per_page=100&sort=updated', { headers: { 'Authorization': `token ${githubToken}` } });
+                if (!res.ok) throw new Error('Failed');
+                repositories = await res.json();
+                renderRepoDropdownOptions();
+                renderRepoList(repositories);
+            } catch (err) { showToast('Error', 'Failed to fetch repository list'); }
+        }
+
+        // ============ FILE HANDLING & UNZIP ============
+        function setupDragAndDrop() {
+            const dz = document.getElementById('dropZone'); if (!dz) return;
+            ['dragenter','dragover','dragleave','drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); }));
+            ['dragenter','dragover'].forEach(ev => dz.addEventListener(ev, () => dz.classList.add('border-lime-500','bg-lime-50/70')));
+            ['dragleave','drop'].forEach(ev => dz.addEventListener(ev, () => dz.classList.remove('border-lime-500','bg-lime-50/70')));
+            dz.addEventListener('drop', e => handleFileSelect({ target: { files: e.dataTransfer.files } }));
+        }
+
+        function sanitizeZipPaths(extractedFiles) {
+            const paths = Object.keys(extractedFiles);
+            if (paths.length === 0) return extractedFiles;
+            
+            const firstParts = paths.map(p => p.split('/')[0]);
+            const allSameRoot = firstParts.every(part => part === firstParts[0]);
+            
+            const hasSubFiles = paths.some(p => p.includes('/'));
+            if (allSameRoot && hasSubFiles) {
+                const rootPrefix = firstParts[0] + '/';
+                const cleaned = {};
+                for (const [p, entry] of Object.entries(extractedFiles)) {
+                    if (p !== firstParts[0] && p !== rootPrefix) {
+                        const newPath = p.startsWith(rootPrefix) ? p.slice(rootPrefix.length) : p;
+                        if (newPath) cleaned[newPath] = entry;
+                    }
+                }
+                return cleaned;
+            }
+            return extractedFiles;
+        }
+
+        // FIXED FILE SELECTION HANDLER (Support Single/Multiple HTML & Files)
+        async function handleFileSelect(event) {
+            const files = event.target.files; if (!files?.length) return;
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.name.toLowerCase().endsWith('.zip')) {
+                    showToast('Unzipping Archive', `Extracting ${file.name}...`);
+                    try {
+                        const zip = new JSZip();
+                        const zipContent = await zip.loadAsync(file);
+                        const sanitizedFiles = sanitizeZipPaths(zipContent.files);
+
+                        for (const [path, entry] of Object.entries(sanitizedFiles)) {
+                            if (!entry.dir) {
+                                const data = await entry.async('uint8array');
+                                preparedFiles.push({ path: path, content: data });
+                            }
+                        }
+                        showToast('ZIP Extracted ✅', `${preparedFiles.length} files extracted into folder tree`);
+                    } catch (e) {
+                        showToast('ZIP Error', 'Failed to extract ZIP content', 'error');
+                    }
+                } else {
+                    // Properly read single or multiple non-ZIP files (like html, css, js)
+                    const ab = await file.arrayBuffer();
+                    const path = file.webkitRelativePath || file.name;
+                    preparedFiles.push({ path: path, content: new Uint8Array(ab) });
+                }
+            }
+            renderFileList();
+        }
+
+        function updateFileName(index, newPath) {
+            const trimmed = newPath.trim();
+            if (!trimmed) {
+                showToast('Path Error', 'File path cannot be empty', 'error');
+                renderFileList();
+                return;
+            }
+            if (preparedFiles[index]) {
+                preparedFiles[index].path = trimmed;
+                renderFileList();
+            }
+        }
+
+        function removeSingleFile(index) {
+            if (preparedFiles[index]) {
+                preparedFiles.splice(index, 1);
+                renderFileList();
+            }
+        }
+
+        function renderFileList() {
+            const sec = document.getElementById('filePreviewSection');
+            const list = document.getElementById('fileList');
+            const cnt = document.getElementById('fileCountText');
+            list.innerHTML = '';
+            
+            if (preparedFiles.length > 0) {
+                sec.classList.remove('hidden');
+                cnt.innerText = `${preparedFiles.length} file(s) ready for merge push`;
+                
+                preparedFiles.slice(0, 50).forEach((f, idx) => {
+                    const el = document.createElement('div');
+                    el.className = 'flex items-center justify-between bg-white/80 p-2 rounded-xl border border-slate-200/70 gap-2';
+                    el.innerHTML = `
+                        <div class="flex items-center gap-2 flex-1 min-w-0">
+                            <i data-lucide="file" class="w-4 h-4 text-lime-600 flex-shrink-0"></i>
+                            <input type="text" value="${f.path.replace(/"/g, '&quot;')}" 
+                                   onchange="updateFileName(${idx}, this.value)" 
+                                   title="Editable file path"
+                                   class="w-full font-mono text-xs text-slate-800 bg-white px-2.5 py-1 rounded-lg border border-slate-300 focus:border-lime-500 outline-none">
+                        </div>
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <span class="text-[10px] text-slate-400 font-semibold">${(f.content.length/1024).toFixed(1)} KB</span>
+                            <button onclick="removeSingleFile(${idx})" class="text-red-400 hover:text-red-600 p-1 rounded-lg hover:bg-red-50">
+                                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                    `;
+                    list.appendChild(el);
+                });
+                if (preparedFiles.length > 50) {
+                    const el = document.createElement('div'); el.className = 'text-center text-slate-400 text-[11px] pt-1';
+                    el.innerText = `...and ${preparedFiles.length - 50} more files`; list.appendChild(el);
+                }
+                lucide.createIcons();
+            } else sec.classList.add('hidden');
+        }
+
+        function clearSelectedFiles() { preparedFiles = []; document.getElementById('fileInput').value = ''; renderFileList(); }
+
+        // ============ PROGRESS ============
+        function updatePushProgress(percent, text, detail = '') {
+            const container = document.getElementById('pushProgressContainer');
+            container.classList.remove('hidden');
+            document.getElementById('progressBar').style.width = `${percent}%`;
+            document.getElementById('progressPercentText').innerText = `${Math.round(percent)}%`;
+            document.getElementById('progressStatusText').innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 text-lime-600 animate-spin"></i><span>${text}</span>`;
+            if (detail) {
+                const steps = document.getElementById('progressSteps');
+                const line = document.createElement('div');
+                line.className = 'flex items-center gap-1 text-[10px]';
+                line.innerHTML = `<span class="text-lime-500">›</span> ${detail}`;
+                steps.appendChild(line);
+                steps.scrollTop = steps.scrollHeight;
+            }
+            lucide.createIcons();
+        }
+
+        function hidePushProgress() { document.getElementById('pushProgressContainer').classList.add('hidden'); document.getElementById('progressSteps').innerHTML = ''; }
+
+        // ============ AI AUTO-FIX ============
+        async function aiPreFixFiles(files) {
+            if (!geminiApiKey || !document.getElementById('aiAutoFixToggle').checked) return files;
+            showToast('AI Active', 'Gemini scanning files for quick fixes...');
+            const codeFiles = files.filter(f => /\.(js|ts|jsx|tsx|html|css|json)$/i.test(f.path));
+            const fixedFiles = [...files];
+            
+            let fixedCount = 0;
+            for (let i = 0; i < Math.min(codeFiles.length, 3); i++) {
+                const f = codeFiles[i];
+                try {
+                    const content = new TextDecoder().decode(f.content);
+                    if (content.length > 4000 || content.length < 20) continue;
+                    
+                    const prompt = `Fix bugs or errors in file: ${f.path}. Return ONLY corrected code:\n\n\`\`\`\n${content}\n\`\`\``;
+                    const fixed = await callGemini(prompt, 'Return clean corrected code with no markdown wrapper.');
+                    
+                    if (fixed && fixed.length > 10) {
+                        let cleanFixed = fixed.replace(/^```[\w]*\n?/gm, '').replace(/```$/gm, '').trim();
+                        if (cleanFixed && cleanFixed !== content.trim()) {
+                            const idx = fixedFiles.findIndex(ff => ff.path === f.path);
+                            if (idx !== -1) {
+                                fixedFiles[idx] = { path: f.path, content: new TextEncoder().encode(cleanFixed) };
+                                fixedCount++;
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.warn('AI pre-fix skipped:', f.path, e.message);
+                }
+            }
+            if (fixedCount > 0) showToast('AI Fixes Applied', `${fixedCount} file(s) optimized before commit`);
+            return fixedFiles;
+        }
+
+        // ============ MERGE PUSH ENGINE ============
+        async function executePush() {
+            if (!githubToken) return showToast('Auth Required', 'Set GitHub PAT in Settings', 'error');
+            const repoFullName = document.getElementById('repoSelect').value;
+            const branch = document.getElementById('branchInput').value.trim() || 'main';
+            const commitMsg = document.getElementById('commitMessage').value.trim() || 'Merge Push via GitPush';
+            
+            if (!repoFullName) return showToast('Missing Repo', 'Please select target repository', 'error');
+            if (preparedFiles.length === 0) return showToast('No Files', 'Upload HTML files or ZIP to push', 'error');
+
+            const pushBtn = document.getElementById('pushBtn');
+            pushBtn.disabled = true;
+            pushBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Merging & Pushing...';
+            lucide.createIcons();
+            document.getElementById('progressSteps').innerHTML = '';
+
+            try {
+                let filesToPush = preparedFiles;
+                if (geminiApiKey && document.getElementById('aiAutoFixToggle').checked) {
+                    updatePushProgress(5, 'AI Analyzing Code...', 'Scanning files');
+                    filesToPush = await aiPreFixFiles(preparedFiles);
+                }
+
+                updatePushProgress(15, `Checking target branch '${branch}'...`, 'Fetching commit reference');
+                const refRes = await fetch(`https://api.github.com/repos/${repoFullName}/git/ref/heads/${branch}`, { 
+                    headers: { 'Authorization': `token ${githubToken}` } 
+                });
+                
+                let latestCommitSha = '', baseTreeSha = '';
+                if (refRes.ok) {
+                    const refData = await refRes.json();
+                    latestCommitSha = refData.object.sha;
+                    const cRes = await fetch(`https://api.github.com/repos/${repoFullName}/git/commits/${latestCommitSha}`, { 
+                        headers: { 'Authorization': `token ${githubToken}` } 
+                    });
+                    if (cRes.ok) {
+                        const cData = await cRes.json();
+                        baseTreeSha = cData.tree.sha;
+                    }
+                }
+
+                const treeItems = [];
+                const total = filesToPush.length;
+                for (let idx = 0; idx < total; idx++) {
+                    const file = filesToPush[idx];
+                    const pct = 20 + Math.round(((idx + 1) / total) * 60);
+                    updatePushProgress(pct, `Uploading (${idx + 1}/${total})`, file.path);
+                    
+                    let binary = '';
+                    const bytes = file.content, len = bytes.byteLength;
+                    for (let i = 0; i < len; i++) binary += String.fromCharCode(bytes[i]);
+                    const b64 = btoa(binary);
+
+                    const blobRes = await fetch(`https://api.github.com/repos/${repoFullName}/git/blobs`, {
+                        method: 'POST', 
+                        headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ content: b64, encoding: 'base64' })
+                    });
+                    if (!blobRes.ok) throw new Error(`Failed to upload blob: ${file.path}`);
+                    const blobData = await blobRes.json();
+                    treeItems.push({ path: file.path, mode: '100644', type: 'blob', sha: blobData.sha });
+                }
+
+                updatePushProgress(85, 'Merging Git Tree...', `${treeItems.length} files merged onto base tree`);
+                const treePayload = { tree: treeItems };
+                if (baseTreeSha) treePayload.base_tree = baseTreeSha;
+
+                const treeRes = await fetch(`https://api.github.com/repos/${repoFullName}/git/trees`, {
+                    method: 'POST', 
+                    headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(treePayload)
+                });
+                if (!treeRes.ok) throw new Error('Tree merge failed');
+                const treeData = await treeRes.json();
+
+                updatePushProgress(90, 'Creating Commit...', 'Signing commit reference');
+                const commitPayload = { message: commitMsg, tree: treeData.sha, parents: latestCommitSha ? [latestCommitSha] : [] };
+                const newCommitRes = await fetch(`https://api.github.com/repos/${repoFullName}/git/commits`, {
+                    method: 'POST', 
+                    headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(commitPayload)
+                });
+                if (!newCommitRes.ok) throw new Error('Commit creation failed');
+                const newCommitData = await newCommitRes.json();
+
+                updatePushProgress(95, 'Updating Branch Head...', `Updating ${branch}`);
+                let upRes = latestCommitSha 
+                    ? await fetch(`https://api.github.com/repos/${repoFullName}/git/refs/heads/${branch}`, {
+                        method: 'PATCH', 
+                        headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ sha: newCommitData.sha })
+                    })
+                    : await fetch(`https://api.github.com/repos/${repoFullName}/git/refs`, {
+                        method: 'POST', 
+                        headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ref: `refs/heads/${branch}`, sha: newCommitData.sha })
+                    });
+                if (!upRes.ok) throw new Error('Failed to update branch reference');
+
+                updatePushProgress(100, 'Success! 🎉', `Pushed & Merged ${filesToPush.length} files successfully!`);
+                showToast('Push Successful! 🎉', `Uploaded & merged ${filesToPush.length} file(s)`);
+                clearSelectedFiles();
+            } catch (err) {
+                console.error(err);
+                showToast('Push Failed', err.message, 'error');
+                updatePushProgress(100, 'Failed ❌', err.message);
+            } finally {
+                pushBtn.disabled = false;
+                pushBtn.innerHTML = '<i data-lucide="git-merge" class="w-5 h-5"></i><span>Upload & Merge Push to GitHub</span>';
+                lucide.createIcons();
+                setTimeout(hidePushProgress, 5000);
+            }
+        }
+
+        // ============ REPO MANUAL ACTIONS ============
+        async function triggerDeployPages(repoFullName) {
+            if (!githubToken) return showToast('Auth Required', 'Token missing', 'error');
+            const [owner, repo] = repoFullName.split('/');
+            try {
+                showToast('Enabling Pages', `Configuring GitHub Pages for ${repo}...`);
+                const res = await fetch(`https://api.github.com/repos/${repoFullName}/pages`, {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `token ${githubToken}`, 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github+json'
+                    },
+                    body: JSON.stringify({ source: { branch: 'main', path: '/' } })
+                });
+
+                if (!res.ok && res.status === 409) {
+                    await fetch(`https://api.github.com/repos/${repoFullName}/pages`, {
+                        method: 'PUT',
+                        headers: { 
+                            'Authorization': `token ${githubToken}`, 
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/vnd.github+json'
+                        },
+                        body: JSON.stringify({ source: { branch: 'main', path: '/' } })
+                    });
+                }
+                
+                const pagesUrl = repo.toLowerCase() === `${owner.toLowerCase()}.github.io` 
+                    ? `https://${owner}.github.io/` 
+                    : `https://${owner}.github.io/${repo}/`;
+
+                showToast('GitHub Pages Enabled 🌐', `URL: ${pagesUrl}`);
+                window.open(pagesUrl, '_blank');
+            } catch (err) {
+                showToast('Pages Error', err.message, 'error');
+            }
+        }
+
+        async function triggerRepoBuild(repoFullName) {
+            if (!githubToken) return showToast('Auth Required', 'Token missing', 'error');
+            try {
+                showToast('Triggering Build', 'Looking for GitHub Actions Workflows...');
+                const wfRes = await fetch(`https://api.github.com/repos/${repoFullName}/actions/workflows`, {
+                    headers: { 'Authorization': `token ${githubToken}` }
+                });
+                if (!wfRes.ok) throw new Error('Could not fetch workflows');
+                const wfData = await wfRes.json();
+
+                if (!wfData.workflows || wfData.workflows.length === 0) {
+                    return showToast('No Workflow Found', 'Create .github/workflows/build.yml to enable APK/App builds.', 'error');
+                }
+
+                const workflow = wfData.workflows[0];
+                const dispatchRes = await fetch(`https://api.github.com/repos/${repoFullName}/actions/workflows/${workflow.id}/dispatches`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ref: 'main' })
+                });
+
+                if (dispatchRes.ok) {
+                    showToast('Build Triggered 🚀', `Workflow "${workflow.name}" started!`);
+                    openBuildsModal(repoFullName);
+                } else {
+                    throw new Error('Failed to dispatch workflow build.');
+                }
+            } catch (err) {
+                showToast('Build Trigger Error', err.message, 'error');
+            }
+        }
+
+        // ============ REPO MODALS ============
+        function openCreateRepoModal() { document.getElementById('createRepoModal').classList.remove('hidden'); }
+        function closeCreateRepoModal() { document.getElementById('createRepoModal').classList.add('hidden'); }
+
+        async function submitCreateRepo() {
+            const name = document.getElementById('newRepoName').value.trim();
+            const desc = document.getElementById('newRepoDesc').value.trim();
+            const isPrivate = document.getElementById('newRepoPrivate').checked;
+            if (!name) return showToast('Error', 'Repo name is required', 'error');
+
+            try {
+                const res = await fetch('https://api.github.com/user/repos', {
+                    method: 'POST',
+                    headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, description: desc, private: isPrivate, auto_init: true })
+                });
+                if (!res.ok) throw new Error('Could not create repository');
+                showToast('Created', `Repository ${name} created successfully!`);
+                closeCreateRepoModal();
+                fetchRepositories();
+            } catch (err) { showToast('Create Failed', err.message, 'error'); }
+        }
+
+        function openEditRepoModal(name, desc, isPrivate) {
+            document.getElementById('editRepoOriginalName').value = name;
+            document.getElementById('editRepoName').value = name;
+            document.getElementById('editRepoDesc').value = desc;
+            document.getElementById('editRepoPrivate').checked = isPrivate;
+            document.getElementById('editRepoModal').classList.remove('hidden');
+        }
+        function closeEditRepoModal() { document.getElementById('editRepoModal').classList.add('hidden'); }
+
+        async function submitEditRepo() {
+            const orig = document.getElementById('editRepoOriginalName').value;
+            const name = document.getElementById('editRepoName').value.trim();
+            const desc = document.getElementById('editRepoDesc').value.trim();
+            const isPrivate = document.getElementById('editRepoPrivate').checked;
+            const owner = currentUser.login;
+
+            try {
+                const res = await fetch(`https://api.github.com/repos/${owner}/${orig}`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, description: desc, private: isPrivate })
+                });
+                if (!res.ok) throw new Error('Could not update repository');
+                showToast('Updated', 'Repo details updated');
+                closeEditRepoModal();
+                fetchRepositories();
+            } catch (err) { showToast('Update Failed', err.message, 'error'); }
+        }
+
+        async function deleteRepository(repoName) {
+            if (!confirm(`Are you sure you want to delete ${repoName}? This action cannot be undone.`)) return;
+            const owner = currentUser.login;
+            try {
+                const res = await fetch(`https://api.github.com/repos/${owner}/${repoName}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `token ${githubToken}` }
+                });
+                if (!res.ok) throw new Error('Failed to delete repository');
+                showToast('Deleted', `${repoName} deleted permanently`);
+                fetchRepositories();
+            } catch (err) { showToast('Delete Failed', err.message, 'error'); }
+        }
+
+        function openAIFixForRepo(repoFullName) {
+            activeModalRepo = repoFullName;
+            document.getElementById('aiFixContent').innerHTML = `
+                <div class="glass-card p-4 rounded-2xl text-center space-y-3">
+                    <p class="text-xs text-slate-600">Enter a bug description or prompt for ${repoFullName.split('/')[1]}</p>
+                    <textarea id="aiFixPromptInput" placeholder="e.g. Fix responsive CSS layout issue or optimization..." class="w-full glass-input p-3 rounded-xl text-xs h-24 outline-none"></textarea>
+                    <button onclick="runManualAiFix()" class="w-full py-2.5 ai-badge text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i> Run Gemini Code Fix
+                    </button>
+                </div>`;
+            document.getElementById('aiFixModal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        async function runManualAiFix() {
+            const prompt = document.getElementById('aiFixPromptInput').value.trim();
+            if (!prompt) return showToast('Warning', 'Please describe what to fix');
+            if (!geminiApiKey) return showToast('AI Required', 'Set Gemini API Key in Settings', 'error');
+
+            const contentEl = document.getElementById('aiFixContent');
+            contentEl.innerHTML = '<div class="text-center py-8 text-slate-400"><i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-purple-500"></i><p class="text-xs">Gemini AI analyzing request...</p></div>';
+            lucide.createIcons();
+
+            try {
+                const solution = await callGemini(`Request: ${prompt}\nProvide detailed instructions or corrected code snippet.`);
+                contentEl.innerHTML = `
+                    <div class="glass-card p-4 rounded-2xl space-y-2">
+                        <h4 class="font-bold text-xs text-purple-700">Gemini Suggestion:</h4>
+                        <pre class="text-[11px] text-slate-700 bg-slate-50 p-3 rounded-xl overflow-x-auto border border-slate-200">${solution.replace(/</g,'&lt;')}</pre>
+                    </div>`;
+            } catch (err) {
+                contentEl.innerHTML = `<div class="text-center py-4 text-red-500 text-xs">${err.message}</div>`;
+            }
+        }
+
+        function closeAiFixModal() { document.getElementById('aiFixModal').classList.add('hidden'); }
+
+        // ============ REPO LIST RENDER ============
+        function renderRepoList(repos) {
+            const container = document.getElementById('repoListContainer'); container.innerHTML = '';
+            if (repos.length === 0) { container.innerHTML = '<div class="col-span-full glass-panel rounded-3xl p-8 text-center text-slate-400"><p>No repositories found.</p></div>'; return; }
+            
+            repos.forEach(repo => {
+                const card = document.createElement('div');
+                card.className = 'glass-panel rounded-2xl p-5 hover:shadow-lg transition space-y-3 border-lime-100 flex flex-col justify-between';
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start gap-2">
+                            <h3 class="font-bold text-slate-800 text-sm truncate flex items-center gap-1.5"><i data-lucide="${repo.private?'lock':'globe'}" class="w-4 h-4 text-slate-400"></i>${repo.name}</h3>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full ${repo.private?'bg-amber-100 text-amber-700':'bg-lime-100 text-lime-700'} font-semibold">${repo.private?'Private':'Public'}</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1 line-clamp-2">${repo.description || 'No description provided'}</p>
+                    </div>
+
+                    <div class="space-y-2 pt-2 border-t border-slate-100">
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="triggerDeployPages('${repo.full_name}')" class="px-2 py-1.5 rounded-xl bg-lime-500 hover:bg-lime-600 text-white text-[11px] font-bold flex items-center justify-center gap-1 shadow-sm">
+                                <i data-lucide="globe" class="w-3.5 h-3.5"></i> Deploy Pages
+                            </button>
+                            <button onclick="triggerRepoBuild('${repo.full_name}')" class="px-2 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-[11px] font-bold flex items-center justify-center gap-1 shadow-sm">
+                                <i data-lucide="cpu" class="w-3.5 h-3.5 text-lime-400"></i> Trigger Build (APK)
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-1.5">
+                            <button onclick="openHistoryModal('${repo.full_name}')" class="px-1.5 py-1.5 rounded-xl glass-card hover:bg-lime-50 text-slate-700 text-[10px] font-semibold flex items-center justify-center gap-1"><i data-lucide="history" class="w-3 h-3 text-lime-600"></i>History</button>
+                            <button onclick="openBuildsModal('${repo.full_name}')" class="px-1.5 py-1.5 rounded-xl glass-card hover:bg-lime-50 text-slate-700 text-[10px] font-semibold flex items-center justify-center gap-1"><i data-lucide="box" class="w-3 h-3 text-lime-600"></i>APK Status</button>
+                            <button onclick="openAIFixForRepo('${repo.full_name}')" class="px-1.5 py-1.5 rounded-xl ai-badge text-white text-[10px] font-semibold flex items-center justify-center gap-1"><i data-lucide="brain-circuit" class="w-3 h-3"></i>AI Fix</button>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs pt-1">
+                            <div class="flex items-center gap-3 text-slate-400 text-[11px]"><span>⭐${repo.stargazers_count}</span><span>🍴${repo.forks_count}</span></div>
+                            <div class="flex items-center gap-1">
+                                <a href="${repo.html_url}" target="_blank" class="p-1.5 text-slate-500 hover:text-lime-600 rounded-lg hover:bg-white/60"><i data-lucide="external-link" class="w-4 h-4"></i></a>
+                                <button onclick="openEditRepoModal('${repo.name}','${(repo.description||'').replace(/'/g,"\\'")}',${repo.private})" class="p-1.5 text-slate-500 hover:text-lime-600 rounded-lg hover:bg-white/60"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                                <button onclick="deleteRepository('${repo.name}')" class="p-1.5 text-red-400 hover:text-red-600 rounded-lg hover:bg-red-50"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function filterRepos() {
+            const q = document.getElementById('repoSearch').value.toLowerCase();
+            renderRepoList(repositories.filter(r => r.name.toLowerCase().includes(q) || (r.description||'').toLowerCase().includes(q)));
+        }
+
+        // ============ HISTORY ============
+        async function openHistoryModal(repoFullName) {
+            activeModalRepo = repoFullName;
+            document.getElementById('historyRepoTitle').innerText = `${repoFullName.split('/')[1]} - Commits`;
+            document.getElementById('historyModal').classList.remove('hidden');
+            const listEl = document.getElementById('historyCommitList');
+            listEl.innerHTML = '<div class="text-center py-6 text-slate-400 text-xs"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-1"></i>Loading commits...</div>';
+            lucide.createIcons();
+            try {
+                const res = await fetch(`https://api.github.com/repos/${repoFullName}/commits?per_page=20`, { headers: { 'Authorization': `token ${githubToken}` } });
+                if (!res.ok) throw new Error('Fetch failed');
+                const commits = await res.json();
+                if (commits.length === 0) { listEl.innerHTML = '<div class="text-center py-4 text-slate-400 text-xs">No commits.</div>'; return; }
+                listEl.innerHTML = commits.map((c,i) => {
+                    const sha = c.sha.substring(0,7), latest = i === 0;
+                    return `<div class="glass-card p-3 rounded-2xl flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-slate-200">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-mono text-[11px] font-bold px-2 py-0.5 rounded-md bg-slate-200 text-slate-700">${sha}</span>
+                                ${latest?'<span class="text-[10px] px-2 py-0.5 rounded-full bg-lime-100 text-lime-700 font-bold">HEAD</span>':''}
+                            </div>
+                            <p class="text-xs font-semibold text-slate-800 mt-1">${c.commit.message}</p>
+                            <p class="text-[10px] text-slate-400">${c.commit.author.name} • ${new Date(c.commit.author.date).toLocaleString()}</p>
+                        </div>
+                        ${!latest?`<button onclick="rollbackCommit('${c.sha}')" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-[11px] shadow-sm flex items-center justify-center gap-1 self-start sm:self-center"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>Rollback</button>`:''}
+                    </div>`;
+                }).join('');
+                lucide.createIcons();
+            } catch (err) { listEl.innerHTML = `<div class="text-center py-4 text-red-500 text-xs">${err.message}</div>`; }
+        }
+        function closeHistoryModal() { document.getElementById('historyModal').classList.add('hidden'); }
+
+        async function rollbackCommit(sha) {
+            if (!confirm(`Force branch head to ${sha.substring(0,7)}?`)) return;
+            try {
+                const res = await fetch(`https://api.github.com/repos/${activeModalRepo}/git/refs/heads/main`, {
+                    method: 'PATCH', headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sha, force: true })
+                });
+                if (!res.ok) throw new Error('Rollback failed');
+                showToast('Reverted ⏪', `Branch reset to ${sha.substring(0,7)}`);
+                openHistoryModal(activeModalRepo);
+            } catch (err) { showToast('Rollback Error', err.message, 'error'); }
+        }
+
+        // ============ BUILDS & APK ARTIFACTS MODAL ============
+        async function openBuildsModal(repoFullName) {
+            activeModalRepo = repoFullName;
+            document.getElementById('buildsRepoTitle').innerText = `${repoFullName.split('/')[1]} - Builds & APK Downloads`;
+            document.getElementById('buildsModal').classList.remove('hidden');
+            document.getElementById('liveBuildBanner').classList.add('hidden');
+            await refreshBuilds();
+            startBuildPolling();
+        }
+
+        function closeBuildsModal() {
+            document.getElementById('buildsModal').classList.add('hidden');
+            stopBuildPolling();
+        }
+
+        async function refreshBuilds() {
+            const contentEl = document.getElementById('buildsContent');
+            contentEl.innerHTML = '<div class="text-center py-6 text-slate-400 text-xs"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-1"></i>Loading builds & APKs...</div>';
+            lucide.createIcons();
+            try {
+                const [artRes, relRes, runsRes] = await Promise.all([
+                    fetch(`https://api.github.com/repos/${activeModalRepo}/actions/artifacts`, { headers: { 'Authorization': `token ${githubToken}` } }),
+                    fetch(`https://api.github.com/repos/${activeModalRepo}/releases`, { headers: { 'Authorization': `token ${githubToken}` } }),
+                    fetch(`https://api.github.com/repos/${activeModalRepo}/actions/runs?per_page=10`, { headers: { 'Authorization': `token ${githubToken}` } })
+                ]);
+                const artData = artRes.ok ? await artRes.json() : { artifacts: [] };
+                const releases = relRes.ok ? await relRes.json() : [];
+                const runsData = runsRes.ok ? await runsRes.json() : { workflow_runs: [] };
+
+                const activeRun = runsData.workflow_runs?.find(r => r.status === 'in_progress' || r.status === 'queued');
+                if (activeRun) { activeBuildRunId = activeRun.id; showLiveBuildBanner(activeRun); }
+                else { activeBuildRunId = null; document.getElementById('liveBuildBanner').classList.add('hidden'); }
+
+                let html = '<div class="space-y-4">';
+                
+                // Releases & APK section
+                html += `<div><h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1"><i data-lucide="smartphone" class="w-4 h-4 text-lime-600"></i> Releases & Compiled APKs</h4>`;
+                if (releases.length === 0) html += '<div class="glass-card p-3 rounded-2xl text-xs text-slate-400 text-center">No releases or APK artifacts found.</div>';
+                else releases.forEach(rel => {
+                    html += `<div class="glass-card p-3 rounded-2xl space-y-2 mb-2">
+                        <div class="flex justify-between items-center"><span class="font-bold text-xs text-slate-800">${rel.name || rel.tag_name}</span><span class="text-[10px] px-2 py-0.5 rounded-full bg-lime-100 text-lime-700 font-bold">${rel.tag_name}</span></div>
+                        <div class="space-y-1">${rel.assets.map(a => `<div class="flex justify-between items-center bg-white/80 px-2.5 py-1.5 rounded-xl border border-slate-100 text-xs"><span class="truncate font-mono text-slate-700 text-[11px]">${a.name}</span><a href="${a.browser_download_url}" target="_blank" class="px-2.5 py-1 rounded-lg premium-gradient text-white font-bold text-[10px] flex items-center gap-1"><i data-lucide="download" class="w-3 h-3"></i> Download APK</a></div>`).join('')}</div>
+                    </div>`;
+                });
+                html += `</div>`;
+
+                // Actions Runs Section
+                if (runsData.workflow_runs?.length > 0) {
+                    html += `<div class="pt-2 border-t border-slate-200"><h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1"><i data-lucide="activity" class="w-4 h-4 text-lime-600"></i> Action Workflow Runs</h4>`;
+                    runsData.workflow_runs.slice(0,5).forEach(run => {
+                        html += `<div class="glass-card p-3 rounded-2xl mb-2 space-y-1.5">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-xs text-slate-800">${run.name || 'Build Workflow'}</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full font-bold ${run.conclusion==='success'?'bg-green-100 text-green-700':run.conclusion==='failure'?'bg-red-100 text-red-700':'bg-amber-100 text-amber-700'}">${run.conclusion || run.status}</span>
+                            </div>
+                            <p class="text-[10px] text-slate-400">#${run.run_number} • ${run.head_branch} • ${new Date(run.created_at).toLocaleString()}</p>
+                            <div class="flex gap-1.5 mt-1 flex-wrap">
+                                ${run.conclusion === 'failure' ? `<button onclick="aiFixBuildFailure(${run.id})" class="px-2.5 py-1 rounded-lg ai-badge text-white font-semibold text-[10px] flex items-center gap-1"><i data-lucide="brain-circuit" class="w-3 h-3"></i>AI Fix & Rebuild</button>` : ''}
+                                <a href="${run.html_url}" target="_blank" class="px-2.5 py-1 rounded-lg glass-card hover:bg-lime-50 text-slate-700 font-semibold text-[10px] flex items-center gap-1"><i data-lucide="external-link" class="w-3 h-3"></i>View Logs</a>
+                            </div>
+                        </div>`;
+                    });
+                    html += `</div>`;
+                }
+
+                // Action Artifacts
+                html += `<div class="pt-2 border-t border-slate-200"><h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1"><i data-lucide="cpu" class="w-4 h-4 text-lime-600"></i> Artifact Outputs</h4>`;
+                if (!artData.artifacts?.length) html += '<div class="glass-card p-3 rounded-2xl text-xs text-slate-400 text-center">No build artifacts stored.</div>';
+                else artData.artifacts.forEach(art => {
+                    const sizeMb = (art.size_in_bytes/(1024*1024)).toFixed(2);
+                    html += `<div class="glass-card p-3 rounded-2xl flex flex-col sm:flex-row justify-between sm:items-center gap-2 mb-2">
+                        <div><h5 class="font-bold text-xs text-slate-800">${art.name}</h5><p class="text-[10px] text-slate-400">${sizeMb} MB • ${new Date(art.created_at).toLocaleDateString()}</p></div>
+                    </div>`;
+                });
+                html += `</div></div>`;
+
+                contentEl.innerHTML = html;
+                lucide.createIcons();
+            } catch (err) { contentEl.innerHTML = `<div class="text-center py-4 text-red-500 text-xs">${err.message}</div>`; }
+        }
+
+        function showLiveBuildBanner(run) {
+            const banner = document.getElementById('liveBuildBanner');
+            banner.classList.remove('hidden');
+            document.getElementById('liveBuildStatus').innerText = `Build ${run.status === 'in_progress' ? 'Running' : 'Queued'}...`;
+            document.getElementById('liveBuildMeta').innerText = `#${run.run_number} • ${run.head_branch}`;
+        }
+
+        function startBuildPolling() {
+            stopBuildPolling();
+            buildPollingInterval = setInterval(async () => {
+                if (!activeBuildRunId || !activeModalRepo) return;
+                try {
+                    const res = await fetch(`https://api.github.com/repos/${activeModalRepo}/actions/runs/${activeBuildRunId}/jobs`, { headers: { 'Authorization': `token ${githubToken}` } });
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    const job = data.jobs?.[0];
+                    if (!job) return;
+                    const steps = job.steps || [];
+                    const completed = steps.filter(s => s.status === 'completed').length;
+                    const total = steps.length;
+                    const pct = total > 0 ? Math.round((completed/total)*100) : (job.status === 'completed' ? 100 : 50);
+                    const progressBar = document.getElementById('liveBuildProgress');
+                    if (progressBar) progressBar.style.width = `${pct}%`;
+                    const currentStep = steps.find(s => s.status === 'in_progress');
+                    if (document.getElementById('liveBuildStatus')) document.getElementById('liveBuildStatus').innerText = currentStep ? currentStep.name : `Build ${job.status}...`;
+                    if (document.getElementById('liveBuildMeta')) document.getElementById('liveBuildMeta').innerText = `Step ${completed}/${total} • ${pct}%`;
+                    
+                    if (job.status === 'completed') {
+                        stopBuildPolling();
+                        const icon = document.getElementById('liveBuildIcon');
+                        if (job.conclusion === 'success') {
+                            if (icon) { icon.className = 'p-1.5 rounded-lg bg-green-100 text-green-600'; icon.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4"></i>'; }
+                            document.getElementById('liveBuildStatus').innerText = 'Build Succeeded ✅';
+                            showToast('Build Completed', 'APK / Output ready');
+                        } else {
+                            if (icon) { icon.className = 'p-1.5 rounded-lg bg-red-100 text-red-600'; icon.innerHTML = '<i data-lucide="x-circle" class="w-4 h-4"></i>'; }
+                            document.getElementById('liveBuildStatus').innerText = 'Build Failed ❌';
+                        }
+                        lucide.createIcons();
+                        setTimeout(refreshBuilds, 2000);
+                    }
+                } catch (e) { console.warn('Poll error', e); }
+            }, 5000);
+        }
+
+        function stopBuildPolling() { if (buildPollingInterval) { clearInterval(buildPollingInterval); buildPollingInterval = null; } }
+
+        // ============ AI BUILD FAILURE FIX ============
+        async function aiFixBuildFailure(runId) {
+            if (!geminiApiKey) return showToast('AI Required', 'Set Gemini API key in Settings', 'error');
+            document.getElementById('aiFixContent').innerHTML = '<div class="text-center py-8 text-slate-400"><i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-purple-500"></i><p class="text-xs">Fetching build error details...</p></div>';
+            document.getElementById('aiFixModal').classList.remove('hidden');
+            lucide.createIcons();
+
+            try {
+                const jobsRes = await fetch(`https://api.github.com/repos/${activeModalRepo}/actions/runs/${runId}/jobs`, { headers: { 'Authorization': `token ${githubToken}` } });
+                if (!jobsRes.ok) throw new Error('Could not fetch jobs');
+                const jobsData = await jobsRes.json();
+                const job = jobsData.jobs?.[0];
+                if (!job) throw new Error('No job steps found');
+
+                const failedStep = job.steps?.find(s => s.conclusion === 'failure');
+                const failedStepName = failedStep?.name || 'unknown build step';
+
+                document.getElementById('aiFixContent').innerHTML = `
+                    <div class="glass-card p-3 rounded-xl">
+                        <h4 class="text-xs font-bold text-slate-700 mb-1">Failed Step: <span class="text-red-600">${failedStepName}</span></h4>
+                    </div>
+                    <div class="text-center py-4"><i data-lucide="brain-circuit" class="w-6 h-6 text-purple-500 animate-pulse mx-auto"></i><p class="text-xs text-slate-500 mt-2">Gemini analyzing build log...</p></div>`;
+                lucide.createIcons();
+
+                const prompt = `GitHub Actions build failed at step: ${failedStepName} in repository ${activeModalRepo}. Suggest a fix for this build failure.`;
+                const aiResponse = await callGemini(prompt, 'You are an expert CI/CD software engineer.');
+
+                document.getElementById('aiFixContent').innerHTML = `
+                    <div class="glass-card p-3 rounded-xl border-purple-200">
+                        <h4 class="text-xs font-bold text-purple-700 mb-1">🤖 AI Analysis & Recommendation:</h4>
+                        <div class="text-xs text-slate-700 whitespace-pre-wrap">${aiResponse}</div>
+                    </div>`;
+            } catch (err) {
+                document.getElementById('aiFixContent').innerHTML = `<div class="text-center py-4 text-red-500 text-xs">${err.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
